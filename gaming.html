@@ -21,12 +21,6 @@
 			window.onresize = canvasResize;
 			ctx.fillStyle = 'black';
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
-			
-			//ctx.fillStyle = 'yellow';
-			//ctx.beginPath();
-    			//ctx.arc(canvas.width/2, canvas.height/2, 10, 0, 2 * Math.PI);
-   			//ctx.fill();
-
 
 			var boids = []
 			var distances = []
@@ -36,9 +30,9 @@
 			//	ydist = boids[bo1d].y - boids[bo2d].y
 			//	return [xdist, ydist]
 			//}
-			function dist(bo1d){
-				xdist = canvas.width/2 - bo1d.x
-				ydist = canvas.height/2 - bo1d.y
+			function dist(bo1d, hivex, hivey){
+				xdist = hivex - bo1d.x
+				ydist = hivey - bo1d.y
 				if(ydist >= 0){
 					originangle = Math.atan(xdist/ydist)
 					//console.log("no pi")
@@ -51,7 +45,7 @@
 			function addParticlesOnClick(event){
 				var x = event.clientX;
 				var y = event.clientY;
-				for(var i = 0; i < 4; i++){
+				for(var i = 0; i < 1; i++){
 					boid = new Boid();
 					if(100>x){
 						x = 100
@@ -83,7 +77,7 @@
 					ctx.closePath();
 					ctx.stroke();
 			}
-			
+
 			class Boid{
 				constructor(){
 					this.x = randomRange(0, canvas.width)
@@ -92,25 +86,11 @@
 					this.speed = randomRange(3, 12)
 					this.size = 9
 				}
-				draw(){
+				draw(hivex, hivey, index){
 					var distance = []
-					distance = dist(this)
+					distance = dist(this, hivex, hivey)
 					var xspeed = 0
 					var yspeed = 0
-					var xdir
-					var ydir
-					var originangle
-
-					if(this.x < canvas.width/2){
-						xdir = 1;
-					} else {
-						xdir = 1
-					}
-					if(this.y < canvas.height/2){
-						ydir = 1;
-					} else {
-						ydir = 1
-					}
 
 					if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
 						ctx.lineWidth = 8;
@@ -125,17 +105,38 @@
 						ctx.closePath();
 						ctx.stroke();
 
-						//line(this.x, this.y, distance[2], Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2)), 'green');
-						//line(this.x, this.y, xdir*Math.PI/2, distance[0], 'yellow');
-						//line(this.x, this.y, ydir*Math.PI, -distance[1], 'yellow');
+						line(this.x, this.y, distance[2], Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2))/6, 'green');
+						//line(this.x, this.y, Math.PI/2, distance[0]/6, 'yellow');
+						//line(this.x, this.y, Math.PI, -distance[1]/6, 'yellow');
 					}					
 
 					var dit = Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2)) // distance to center
 					var grav = Math.pow(Math.abs(dit/300)+1, 2) // gravity inverse square, but capped
-
-
-					xspeed = this.speed * Math.sin(this.angle) + Math.sin(distance[2])/grav
-					yspeed = this.speed * Math.cos(this.angle) + Math.cos(distance[2])/grav
+					
+					var avoidx = 0
+					var avoidy = 0
+					for(var i = 0; i < boids.length; i++){
+						if(index != i){
+							var boidist = dist(this, boids[i].x, boids[i].y);
+							var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
+							if(boiddit < 19){
+								boiddit = 19;
+							}
+							var repel = (16+boids.length)/Math.pow(0.1*(Math.abs(boiddit)-16), 2); // gravity inverse square, but capped
+							avoidx = avoidx + repel*Math.sin(boidist[2]);
+							avoidy = avoidy + repel*Math.cos(boidist[2]);
+							line(this.x, this.y, boiddit[2], boidist, 'pink');
+							//console.log(boidist, boiddit, repel)
+						}
+					}
+					avoidx = avoidx/boids.length;
+					avoidy = avoidy/boids.length;
+					if(Math.round(avoidx, avoidy)!=0){
+						console.log(Math.round(avoidx, avoidy));
+					}
+					xspeed = (this.speed * Math.sin(this.angle) + Math.sin(distance[2])/grav - avoidx)*0.9;
+					yspeed = (this.speed * Math.cos(this.angle) + Math.cos(distance[2])/grav - avoidy)*0.9;
+					//console.log(xspeed, yspeed);
 					if(-20>xspeed>20){
 						xspeed = 10
 					}
@@ -150,20 +151,62 @@
 						//console.log("up")
 					}
 					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2))
-					this.x = this.x + xspeed
-					this.y = this.y + yspeed
+					this.x = this.x + xspeed;
+					this.y = this.y + yspeed;
+					//console.log(this.x, this.y);
 				}
 			}
+			brain = new Boid;
+			brain.x = canvas.width/2
+			brain.y = canvas.height/2
+			brain.angle = 0 // vx
+			brain.speed = 0 // vy
 			setInterval(function(){
 				ctx.fillStyle = '#23272A';
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+				if(boids.length != 0){
+					hivex = 0
+					hivey = 0
+					for(var i = 0; i < boids.length; i++){
+						hivex = hivex + boids[i].x;
+						hivey = hivey + boids[i].y;
+						//console.log(boids[i].x, boids[i].y)
+					}
+					hivex = hivex/boids.length;
+					hivey = hivey/boids.length;
+					//console.log(hivex, hivey, boids.length)
+					brain.angle = (brain.angle + brain.x - hivex)/1.5
+					brain.speed = (brain.speed + brain.y - hivey)/1.5
 
-				for(var i = 0; i < boids.length; i++){
-					boids[i].draw()
+					if(150>hivex){
+						brain.speed = brain.speed + 60
+					} else if(hivex>canvas.width-200) {
+						brain.speed = brain.speed - 60
+					}
+					if(150>hivey){
+						brain.angle = brain.angle + 60
+					} else if(hivey>canvas.height-200) {
+						brain.angle = brain.angle - 60
+					}
+
+					brain.x = brain.x - brain.angle/20
+					brain.y = brain.y - brain.speed/20
+					//console.log(vxy)
+					ctx.fillStyle = 'gray';
+					ctx.arc(brain.x, brain.y, 10, 0, 2 * Math.PI);
+					ctx.fill();
+					//ctx.fillStyle = 'white';
+					//ctx.arc(hivex, hivey, 10, 0, 2 * Math.PI);
+					//ctx.fill();
+					//console.log(boids.length);
+	
+					for(var i = 0; i < boids.length; i++){
+						boids[i].draw(brain.x, brain.y, i);
+					}
 				}
 
-			}, 20)
+			}, 12)
 
 		</script>
 	</body>
