@@ -60,7 +60,7 @@
 					boid.x = x + randomRange(-50, 50)
 					boid.y = y + randomRange(-50, 50)
 					boids.push(boid)
-					if(boids.length>80){
+					if(boids.length>40){
 						boids.shift();
 					}
 				}
@@ -83,8 +83,9 @@
 					this.x = randomRange(0, canvas.width)
 					this.y = randomRange(0, canvas.height)
 					this.angle = 2*Math.random()*Math.PI
+					this.va = 0
 					this.speed = randomRange(3, 12)
-					this.size = 9
+					this.size = randomRange(7, 9)
 				}
 				draw(hivex, hivey, index){
 					var distance = []
@@ -93,7 +94,7 @@
 					var yspeed = 0
 
 					if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
-						ctx.lineWidth = 8;
+						ctx.lineWidth = this.size;
 						ctx.strokeStyle = 'red'
 						ctx.lineJoin = 'round';
 						ctx.beginPath();
@@ -119,23 +120,23 @@
 						if(index != i){
 							var boidist = dist(this, boids[i].x, boids[i].y);
 							var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
-							if(boiddit < 19){
-								boiddit = 19;
-							}
-							var repel = (16+boids.length)/Math.pow(0.1*(Math.abs(boiddit)-16), 2); // gravity inverse square, but capped
+							if(boiddit < 20){
+								boiddit = 20;
+							} 
+							var repel = (16+boids.length)/Math.pow(0.1*(Math.abs(boiddit)-16), 2)-0.6;
 							avoidx = avoidx + repel*Math.sin(boidist[2]);
 							avoidy = avoidy + repel*Math.cos(boidist[2]);
+							
 							line(this.x, this.y, boiddit[2], boidist, 'pink');
 							//console.log(boidist, boiddit, repel)
 						}
 					}
 					avoidx = avoidx/boids.length;
 					avoidy = avoidy/boids.length;
-					if(Math.round(avoidx, avoidy)!=0){
-						console.log(Math.round(avoidx, avoidy));
-					}
+
 					xspeed = (this.speed * Math.sin(this.angle) + Math.sin(distance[2])/grav - avoidx)*0.9;
 					yspeed = (this.speed * Math.cos(this.angle) + Math.cos(distance[2])/grav - avoidy)*0.9;
+					
 					//console.log(xspeed, yspeed);
 					if(-20>xspeed>20){
 						xspeed = 10
@@ -143,13 +144,21 @@
 					if(-20>yspeed>20){
 						yspeed = 10
 					}
+					var va = 0
 					if(yspeed >= 0){
 						//console.log("down")
-						this.angle = Math.atan(xspeed/yspeed)
+						this.va = Math.atan(xspeed/yspeed) - this.angle
+
 					} else {
-						this.angle = Math.atan(xspeed/yspeed)+Math.PI
+						this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle
 						//console.log("up")
 					}
+					if(this.va > Math.PI/16){
+						this.va = Math.PI/16
+					} else if(this.va < -Math.PI/16) {
+						this.va = -Math.PI/16
+					}
+					this.angle = this.angle + this.va
 					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2))
 					this.x = this.x + xspeed;
 					this.y = this.y + yspeed;
@@ -159,8 +168,9 @@
 			brain = new Boid;
 			brain.x = canvas.width/2
 			brain.y = canvas.height/2
-			brain.angle = 0 // vx
+			brain.angle = 0
 			brain.speed = 0 // vy
+			brain.size = 0 // vx
 			setInterval(function(){
 				ctx.fillStyle = '#23272A';
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -176,7 +186,7 @@
 					hivex = hivex/boids.length;
 					hivey = hivey/boids.length;
 					//console.log(hivex, hivey, boids.length)
-					brain.angle = (brain.angle + brain.x - hivex)/1.5
+					brain.size = (brain.size + brain.x - hivex)/1.5
 					brain.speed = (brain.speed + brain.y - hivey)/1.5
 
 					if(150>hivex){
@@ -185,12 +195,12 @@
 						brain.speed = brain.speed - 60
 					}
 					if(150>hivey){
-						brain.angle = brain.angle + 60
+						brain.size = brain.size + 60
 					} else if(hivey>canvas.height-200) {
-						brain.angle = brain.angle - 60
+						brain.size = brain.size - 60
 					}
 
-					brain.x = brain.x - brain.angle/20
+					brain.x = brain.x - brain.size/20
 					brain.y = brain.y - brain.speed/20
 					//console.log(vxy)
 					ctx.fillStyle = 'gray';
@@ -206,7 +216,7 @@
 					}
 				}
 
-			}, 12)
+			}, 10)
 
 		</script>
 	</body>
