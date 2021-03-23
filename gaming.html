@@ -119,12 +119,12 @@
 							var repel
 							if(boiddit < 31.6){
 								repel = (-1.5)*boiddit+87.7
-								pressure = pressure + boiddit*0.01
+								pressure = pressure + boiddit*0.001
 							} else if(boiddit > 200){
 								repel = 0
 							} else {
 								if(boiddit < 80){
-									pressure = pressure + boiddit*0.005
+									pressure = pressure + boiddit*0.0003
 								}
 								var repel = -(boiddit-50)*(boiddit-250)*(boiddit-350)/(20000*(boiddit-30)) + 0.3;
 							}
@@ -227,7 +227,8 @@
 					this.x = this.x + xspeed;
 					this.y = this.y + yspeed;
 					//console.log(this.x, this.y);
-					this.size = Math.sqrt(this.speed)*2+3.5;
+
+					this.size = Math.sqrt(this.speed+0.8)*2.4/pressure+1.5;
 
 					var red = this.r * Math.sin(this.angle)/3 + 174
 					var green = this.g * Math.sin(this.angle+2*Math.PI/3)/3 + 174
