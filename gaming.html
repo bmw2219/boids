@@ -119,12 +119,12 @@
 							var repel
 							if(boiddit < 31.6){
 								repel = (-1.5)*boiddit+87.7
-								pressure = pressure + boiddit*0.1
+								pressure = pressure + boiddit*0.01
 							} else if(boiddit > 200){
 								repel = 0
 							} else {
 								if(boiddit < 80){
-									pressure = pressure + boiddit*0.05
+									pressure = pressure + boiddit*0.005
 								}
 								var repel = -(boiddit-50)*(boiddit-250)*(boiddit-350)/(20000*(boiddit-30)) + 0.3;
 							}
@@ -138,8 +138,8 @@
 						}
 					}
 					
-					avoidx = avoidx/boids.length;
-					avoidy = avoidy/boids.length;
+					avoidx = 0.01*avoidx + avoidx/boids.length;
+					avoidy = 0.01*avoidy + avoidy/boids.length;
 					var moss = 0
 					var mossx = 0
 					var mossy = 0
@@ -197,8 +197,8 @@
 					//}
 
 
-					xspeed = (this.speed * Math.sin(this.angle) - avoidx - mossx/50 + windx/14)*0.9;
-					yspeed = (this.speed * Math.cos(this.angle) - avoidy - mossy/50 + windy/14)*0.9;
+					xspeed = (this.speed * Math.sin(this.angle) - avoidx - mossx/50 + windx/14)*0.94;
+					yspeed = (this.speed * Math.cos(this.angle) - avoidy - mossy/50 + windy/14)*0.94;
 					
 					//console.log(xspeed, yspeed);
 					if(-20>xspeed>20){
