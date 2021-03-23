@@ -6,7 +6,7 @@
 			function randomRange(low, high){
 				var difference = high-low;
 				var output = Math.random();
-				output = Math.round(output*difference)+low;
+				output = Math.round(output*(difference+0.99)-0.5)+low;
 				return output;
 			}
 			var canvas = document.getElementById('screen');
@@ -19,9 +19,11 @@
 			}
 			canvasResize();
 			window.onresize = canvasResize;
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = '#23272A';
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+			ctx.font = "120px Arial";
+			ctx.fillStyle = '#7289DA';
+			ctx.fillText("click for boids :D", 100, canvas.height-120);
 			var boids = []
 			var distances = []
 
@@ -66,6 +68,26 @@
 				}
 				
 			}
+			var mouseX = 0
+			var mouseY = 0
+			function onMouseMove(event){
+				if(boids.length > 0){
+					mouseX = event.pageX + 'px';
+					mouseY = event.pageY + 'px';
+					//if(100>mouseX){
+					//	mouseX = 100
+					//} else if(mouseX>canvas.width-100) {
+					//	mouseX = canvas.width-100
+					//}
+					//if(100>mouseY){
+					//	mouseY = 100
+					//} else if(mouseY>canvas.height-100) {
+					//	mouseY = canvas.height-100
+					//}
+				}
+			}
+
+			canvas.addEventListener('mousemove', onMouseMove);
 			canvas.addEventListener('mousedown', addParticlesOnClick);
 
 			function line(x, y, angle, length, color){
@@ -106,36 +128,70 @@
 						ctx.closePath();
 						ctx.stroke();
 
-						line(this.x, this.y, distance[2], Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2))/6, 'green');
+						//line(this.x, this.y, distance[2], Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2))/6, 'green');
 						//line(this.x, this.y, Math.PI/2, distance[0]/6, 'yellow');
 						//line(this.x, this.y, Math.PI, -distance[1]/6, 'yellow');
 					}					
 
-					var dit = Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2)) // distance to center
-					var grav = Math.pow(Math.abs(dit/300)+1, 2) // gravity inverse square, but capped
+					//var dit = Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2)) // distance to center
+					//var grav = Math.pow(Math.abs(dit/300)+1, 2) // gravity inverse square, but capped
 					
 					var avoidx = 0
 					var avoidy = 0
+
 					for(var i = 0; i < boids.length; i++){
 						if(index != i){
 							var boidist = dist(this, boids[i].x, boids[i].y);
 							var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
-							if(boiddit < 20){
-								boiddit = 20;
-							} 
-							var repel = (16+boids.length)/Math.pow(0.1*(Math.abs(boiddit)-16), 2)-0.6;
+							if(boiddit < 23){
+								boiddit = 23;
+							} else if(boiddit > 397){
+								boiddit = 397
+							}
+							//var repel = (16+boids.length)/Math.pow(0.1*(Math.abs(boiddit)-16), 2)+Math.pow((boiddit-120), 2)/5000-0.85;
+							var repel = -(boiddit-50)*(boiddit-250)*(boiddit-350)/(20000*(boiddit-20)) + 0.3;
 							avoidx = avoidx + repel*Math.sin(boidist[2]);
 							avoidy = avoidy + repel*Math.cos(boidist[2]);
-							
-							line(this.x, this.y, boiddit[2], boidist, 'pink');
+				
+							//line(this.x, this.y, boiddit[2], boidist, 'pink');
 							//console.log(boidist, boiddit, repel)
 						}
 					}
 					avoidx = avoidx/boids.length;
 					avoidy = avoidy/boids.length;
+					
+					var quadx
+					var quady
+					var windx = 0
+					var windy = 0
+					quadx = Math.round((8*this.x-canvas.width/2)/canvas.width)
+					quady = Math.round((8*this.y-canvas.height/2)/canvas.height)
+					//console.log(quadx, quady)
+					if(50>=this.x){
+						windx = 1.2
+					} else if(this.x>=canvas.width-50) {
+						windx = -1.2
+					} else {
+						var check1 = 1
+					}
+						
+					if(50>=this.y){
+						windy = 1.2
+					} else if(this.y>=canvas.height-50) {
+						windy = -1.2
+					} else {
+						var check2 = 1
+					}
+						
+					if(check1 && check2){
+						windx = Math.sin(wind[quadx][quady])
+						windy = Math.cos(wind[quadx][quady])
+					}
 
-					xspeed = (this.speed * Math.sin(this.angle) + Math.sin(distance[2])/grav - avoidx)*0.9;
-					yspeed = (this.speed * Math.cos(this.angle) + Math.cos(distance[2])/grav - avoidy)*0.9;
+
+					xspeed = (this.speed * Math.sin(this.angle) - avoidx + windx/14)*0.9;
+					yspeed = (this.speed * Math.cos(this.angle) - avoidy + windy/14)*0.9;
+
 					
 					//console.log(xspeed, yspeed);
 					if(-20>xspeed>20){
@@ -153,10 +209,11 @@
 						this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle
 						//console.log("up")
 					}
-					if(this.va > Math.PI/16){
-						this.va = Math.PI/16
-					} else if(this.va < -Math.PI/16) {
-						this.va = -Math.PI/16
+					var turnspeed = 48
+					if(this.va > Math.PI/turnspeed){
+						this.va = Math.PI/turnspeed
+					} else if(this.va < -Math.PI/turnspeed) {
+						this.va = -Math.PI/turnspeed
 					}
 					this.angle = this.angle + this.va
 					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2))
@@ -165,55 +222,43 @@
 					//console.log(this.x, this.y);
 				}
 			}
-			brain = new Boid;
-			brain.x = canvas.width/2
-			brain.y = canvas.height/2
-			brain.angle = 0
-			brain.speed = 0 // vy
-			brain.size = 0 // vx
+			wind = [
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0]
+
+			]
+			for(var i = 0; i < 8; i++){
+				for(var j = 0; j < 8; j++){
+				wind[i][j] = 2*Math.random()*Math.PI
+				}
+			}
 			setInterval(function(){
-				ctx.fillStyle = '#23272A';
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+		
 				if(boids.length != 0){
-					hivex = 0
-					hivey = 0
-					for(var i = 0; i < boids.length; i++){
-						hivex = hivex + boids[i].x;
-						hivey = hivey + boids[i].y;
-						//console.log(boids[i].x, boids[i].y)
+					rando = randomRange(0,3)
+					if(rando == 0){
+						eggs = randomRange(0,3)
+						why = randomRange(0,3)
+						wind[eggs][why] = 2*Math.random()*Math.PI
+						//console.log(wind)
 					}
-					hivex = hivex/boids.length;
-					hivey = hivey/boids.length;
-					//console.log(hivex, hivey, boids.length)
-					brain.size = (brain.size + brain.x - hivex)/1.5
-					brain.speed = (brain.speed + brain.y - hivey)/1.5
+					
+					ctx.fillStyle = '#23272A';
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-					if(150>hivex){
-						brain.speed = brain.speed + 60
-					} else if(hivex>canvas.width-200) {
-						brain.speed = brain.speed - 60
-					}
-					if(150>hivey){
-						brain.size = brain.size + 60
-					} else if(hivey>canvas.height-200) {
-						brain.size = brain.size - 60
-					}
-
-					brain.x = brain.x - brain.size/20
-					brain.y = brain.y - brain.speed/20
-					//console.log(vxy)
-					ctx.fillStyle = 'gray';
-					ctx.arc(brain.x, brain.y, 10, 0, 2 * Math.PI);
-					ctx.fill();
-					//ctx.fillStyle = 'white';
-					//ctx.arc(hivex, hivey, 10, 0, 2 * Math.PI);
-					//ctx.fill();
-					//console.log(boids.length);
-	
 					for(var i = 0; i < boids.length; i++){
-						boids[i].draw(brain.x, brain.y, i);
+						boids[i].draw(mouseX, mouseY, i);
 					}
+					ctx.font = "120px Arial";
+					ctx.fillStyle = '#7289DA';
+					strboid = boids.length.toString()
+					ctx.fillText(boids.length, canvas.width-69*strboid.length-60, 120);
 				}
 
 			}, 10)
