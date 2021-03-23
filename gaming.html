@@ -27,11 +27,11 @@
 				}
 			}
 			canvasResize();
-			window.onresize = canvasResize;
+			//window.onresize = canvasResize;
 			//ctx.fillStyle = '#23272A';
 			//ctx.fillRect(0, 0, canvas.width, canvas.height);
 			//if(boids.length == 0){
-			//	ctx.font = "120px Arial";
+			//	ctx.font = canvas.width / 15 + "px Arial";
 			//	ctx.fillStyle = '#7289DA';
 			//	ctx.fillText("click for boids :D", 100, canvas.height-120);
 			//}
@@ -117,11 +117,15 @@
 							var boidist = dist(this, boids[i].x, boids[i].y);
 							var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
 							var repel
-							if(boiddit < 31.6){
-								repel = (-1.5)*boiddit+87.7
+							if(boiddit < 31.1){
+								repel = (-4)*boiddit+184.6
 								pressure = pressure + boiddit*0.001
 							} else if(boiddit > 200){
 								repel = 0
+								if(220<=boiddit && boiddit<=230){
+									//console.log(boiddit)
+									repel = -(boiddit-220)*(boiddit-230)/30
+								}
 							} else {
 								if(boiddit < 80){
 									pressure = pressure + boiddit*0.0003
@@ -195,17 +199,34 @@
 					//	windx = Math.sin(wind[quadx][quady])
 					//	windy = Math.cos(wind[quadx][quady])
 					//}
+					
+					var xccel = - avoidx - mossx/50 + windx/25
+					var yccel = - avoidy - mossy/50 + windy/25
 
+					if(-3>xccel){
+						xccel = -3
+					} else if(xccel>3){
+						xccel = 3
+					}
+					if(-3>yccel){
+						yccel = -3
+					} else if(yccel>3){
+						yccel = 3
+					}
 
-					xspeed = (this.speed * Math.sin(this.angle) - avoidx - mossx/50 + windx/14)*0.94;
-					yspeed = (this.speed * Math.cos(this.angle) - avoidy - mossy/50 + windy/14)*0.94;
+					xspeed = (this.speed * Math.sin(this.angle)+xccel)*0.95;
+					yspeed = (this.speed * Math.cos(this.angle)+yccel)*0.95;
 					
 					//console.log(xspeed, yspeed);
-					if(-20>xspeed>20){
-						xspeed = 20
+					if(-10>xspeed){
+						xspeed = -10
+					} else if(xspeed>10){
+						xspeed = 10
 					}
-					if(-20>yspeed>20){
-						yspeed = 20
+					if(-10>yspeed){
+						yspeed = -10
+					} else if(yspeed>10){
+						yspeed = 10
 					}
 					var va = 0
 					if(yspeed >= 0){
@@ -216,24 +237,33 @@
 						this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle
 						//console.log("up")
 					}
-					var turnspeed = 48
-					if(this.va > Math.PI/turnspeed){
-						this.va = Math.PI/turnspeed
-					} else if(this.va < -Math.PI/turnspeed) {
-						this.va = -Math.PI/turnspeed
+				
+					var turnspeed = 16
+					var mom = dist(this, mouseX, mouseY)
+
+					var facecursor = mom[2]-this.angle
+					if(facecursor > Math.PI){
+						while(facecursor > Math.PI){
+							facecursor += -2*Math.PI
+						}
+					} else if(facecursor < -Math.PI){
+						while(facecursor < Math.PI){
+							facecursor += 2*Math.PI
+						}
 					}
-					this.angle = this.angle + this.va
+					
+					this.angle = this.angle + this.va + (facecursor)/100 // mom is mouseangle. difference between any two angles is never more than PI
 					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2))
 					this.x = this.x + xspeed;
 					this.y = this.y + yspeed;
 					//console.log(this.x, this.y);
-
+					
 					this.size = Math.sqrt(this.speed+0.8)*2.4/pressure+1.5;
 
 					var red = this.r * Math.sin(this.angle)/3 + 174
 					var green = this.g * Math.sin(this.angle+2*Math.PI/3)/3 + 174
 					var blue = this.b * Math.sin(this.angle+4*Math.PI/3)/3 + 174
-
+					
 					if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
 						ctx.lineWidth = this.size;
 						ctx.strokeStyle = 'rgba('+red+', '+green+', '+blue+', '+1+')';
@@ -253,46 +283,27 @@
 					}
 				}
 			}
-			wind = [
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0]
 
-			]
-			for(var i = 0; i < 8; i++){
-				for(var j = 0; j < 8; j++){
-				wind[i][j] = 2*Math.random()*Math.PI
-				}
-			}
+
 			setInterval(function(){
 				canvasResize();
 				if(boids.length != 0){
-					/*
-					rando = randomRange(0,3)
-					if(rando == 0){
-						eggs = randomRange(0,3)
-						why = randomRange(0,3)
-						wind[eggs][why] = 2*Math.random()*Math.PI
-						//console.log(wind)
-					}
-					*/
 					
-
+					ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+					ctx.beginPath();
+    					ctx.arc(mouseX, mouseY, 50, 0, 2 * Math.PI);
+   					ctx.fill();
+					
 					for(var i = 0; i < boids.length; i++){
 						boids[i].draw(mouseX, mouseY, i);
 					}
-					ctx.font = "120px Arial";
+					ctx.font = canvas.width / 15 + "px Arial";
 					ctx.fillStyle = '#7289DA';
 					strboid = boids.length.toString()
-					ctx.fillText(boids.length, canvas.width-69*strboid.length-60, 120);
+					ctx.fillText(boids.length, canvas.width - canvas.width*strboid.length/27 - canvas.width/30, canvas.width / 15);
 				}
 
-			}, 10)
+			}, 14)
 		
 			function scroll(event){
 				var x = mouseX;
@@ -315,7 +326,7 @@
 						boid.x = x + randomRange(-50, 50)
 						boid.y = y + randomRange(-50, 50)
 						boids.push(boid)
-						if(boids.length>120){
+						if(boids.length>200){
 							boids.shift();
 						}
 					}
