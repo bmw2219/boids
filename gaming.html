@@ -85,14 +85,7 @@
 			}
 
 			function onClick(event){
-				if(overlay && Over.x > Over.width-4){
-							Over.slide = 0;
-							overlay = !overlay;
-						} else if(overlay == false && Over.x < 4){
-							Over.slide = 0;
-							overlay = !overlay;
-						}
-
+				// nothing for now
 			}
 
 			function onMouseEnter(event){
@@ -126,10 +119,10 @@
 					// event.ctrlKey may be true if Ctrl key is pressed at the same time.
 					return;
 				} else {
-					if(keyName == " " && boids.length>0){
+					if((keyName == " " || keyName = "p") && boids.length>0){
 						console.log("spacebar");
 						pause = !pause;
-					} else if(keyName == "Escape"){
+					} else if(keyName == "Escape" || keyName == "m"){
 						console.log("escape");
 						if(overlay && Over.x > Over.width-4){
 							Over.slide = 0;
