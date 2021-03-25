@@ -88,10 +88,10 @@
 				if(overlay && Over.x > Over.width-4){
 							Over.slide = 0;
 							overlay = !overlay;
-						} else if(overlay == false && Over.x < 4){
+				} else if(overlay == false && Over.x < 4){
 							Over.slide = 0;
 							overlay = !overlay;
-						}
+				}
 
 			}
 
@@ -452,18 +452,18 @@
 			setInterval(function(){
 				if(boids.length != 0){
 					slidata[0][2] = boids.length;
+					ctx.fillStyle = canvascolor;
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					if(mousein){
+						ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+						ctx.beginPath();
+						ctx.arc(mouseX, mouseY, 50, 0, 2 * Math.PI);
+						ctx.fill();
+					}
 					if(!pause){
-						ctx.fillStyle = canvascolor;
-						ctx.fillRect(0, 0, canvas.width, canvas.height);
-						if(mousein){
-							ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-							ctx.beginPath();
-    							ctx.arc(mouseX, mouseY, 50, 0, 2 * Math.PI);
-   							ctx.fill();
-						}
 						for(var i = 0; i < boids.length; i++){
 							boids[i].calc(i);
-							boids[i].draw();
+
 						}
 						ctx.font = canvas.width / 15 + "px Arial";
 						ctx.fillStyle = '#7289DA';
@@ -481,6 +481,9 @@
 					ctx.fillStyle = '#7289DA';
 					ctx.fillText("scroll for boids :D", 80, canvas.height-100);
 					ctx.fillStyle = canvascolor;
+				}
+				for(var boid of boids){
+					boid.draw()
 				}
 				if(overlay){
 					Over.calc(-1);
