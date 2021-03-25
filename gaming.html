@@ -390,15 +390,10 @@
 				}
 				calc(neg){
 					if(this.x<this.width -1|| neg > 0){
-<<<<<<< HEAD
 						this.slide += 1
 						this.x = this.width/(1+Math.pow(Math.E, (neg*180/this.width)*(this.slide-15))) //logistic sweepy curve
 						console.log(this.slide, this.x)
-=======
-						this.slide += 1;
-						this.x = this.width/(1+Math.pow(Math.E, (neg*100/this.width)*(this.slide-15))); //logistic sweepy curve
-						console.log(this.slide, this.x);
->>>>>>> 79272e607ce614097dbbe1fd55571ee47b1deea2
+
 					} else if (this.x>this.width-1){
 						this.x = this.width;
 					}
