@@ -460,15 +460,15 @@
 						ctx.arc(mouseX, mouseY, 50, 0, 2 * Math.PI);
 						ctx.fill();
 					}
+					ctx.font = canvas.width / 15 + "px Arial";
+					ctx.fillStyle = '#7289DA';
+					strboid = boids.length.toString();
+					ctx.fillText(boids.length, canvas.width - canvas.width*strboid.length/27 - canvas.width/30, canvas.width / 15);
 					if(!pause){
 						for(var i = 0; i < boids.length; i++){
 							boids[i].calc(i);
-
 						}
-						ctx.font = canvas.width / 15 + "px Arial";
-						ctx.fillStyle = '#7289DA';
-						strboid = boids.length.toString();
-						ctx.fillText(boids.length, canvas.width - canvas.width*strboid.length/27 - canvas.width/30, canvas.width / 15);
+
 					} else {
 						ctx.font = canvas.width / 15 + "px Arial";
 						ctx.fillStyle = '#7289DA';
