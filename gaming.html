@@ -391,7 +391,7 @@
 				calc(neg){
 					if(this.x<this.width -1|| neg > 0){
 						this.slide += 1
-						this.x = this.width/(1+Math.pow(Math.E, (neg*100/this.width)*(this.slide-15))) //logistic sweepy curve
+						this.x = this.width/(1+Math.pow(Math.E, (neg*180/this.width)*(this.slide-15))) //logistic sweepy curve
 						console.log(this.slide, this.x)
 					} else if (this.x>this.width-1){
 						this.x = this.width
