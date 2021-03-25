@@ -3,51 +3,51 @@
 	<body style="padding:0;margin:0;overflow: hidden;">
 		<canvas id="screen"></canvas>
 		<script>
-			canvascolor = "rgba(19, 23, 26, 0.3)"
+			canvascolor = "rgba(19, 23, 26, 0.3)";
 
 			var canvas = document.getElementById('screen');
 			var ctx = canvas.getContext('2d');
 
-			var boids = []
-			var mouseX = 0
-			var mouseY = 0
+			var boids = [];
+			var mouseX = 0;
+			var mouseY = 0;
 			var pause = false;
 			var overlay = false;
-			var mousein = false
+			var mousein = false;
 
 			// CUSTOMIZABLES!!!
-			const highlights = true
-			const auras = true
-			const friction = 0.93
-			const maxspeed = 20
-			const bump = 40 // bigger = less clumped (highlighted) boids
-			const mouseinfluence = 1/100
-			const scrollnumber = 5
-			const repelbump = 1/100
-			const maxcell = 10
-			const maxturn	= 0.5
-			const borderwidth = 150
-			const borderstrength = 30
+			const highlights = true;
+			const auras = true;
+			const friction = 0.93;
+			const maxspeed = 20;
+			const bump = 40; // bigger = less clumped (highlighted) boids
+			const mouseinfluence = 1/100;
+			const scrollnumber = 5;
+			const repelbump = 1/100;
+			const maxcell = 10;
+			const maxturn	= 0.5;
+			const borderwidth = 150;
+			const borderstrength = 30;
 
 			var slidata = [
 			[250, 0, 0, "Boids"],
 			[200, 0, 0, "Setting 2"],
 			[200, 0, 0, "Setting 3"],
 			[200, 0, 0, "Setting 4"]
-			]
+		];
 
 
 			function dist(bo1d, x, y){
-				xdist = x - bo1d.x
-				ydist = y - bo1d.y
+				xdist = x - bo1d.x;
+				ydist = y - bo1d.y;
 				if(ydist >= 0){
-					originangle = Math.atan(xdist/ydist)
+					originangle = Math.atan(xdist/ydist);
 					//console.log("no pi")
 				} else {
-					originangle = Math.atan(xdist/ydist)+Math.PI
+					originangle = Math.atan(xdist/ydist)+Math.PI;
 					//console.log("+pi")
 				}
-				return [xdist, ydist, originangle]
+				return [xdist, ydist, originangle];
 			}
 
 			function randomRange(low, high){
@@ -59,7 +59,7 @@
 
 			function line(x, y, angle, length, color){
 					ctx.lineWidth = 3;
-					ctx.strokeStyle = color
+					ctx.strokeStyle = color;
 					ctx.beginPath();
 					ctx.moveTo(x, y);
 					ctx.lineTo(x + length*Math.sin(angle), y + length*Math.cos(angle));
@@ -86,10 +86,10 @@
 
 			function onClick(event){
 				if(overlay && Over.x > Over.width-4){
-							Over.slide = 0
+							Over.slide = 0;
 							overlay = !overlay;
 						} else if(overlay == false && Over.x < 4){
-							Over.slide = 0
+							Over.slide = 0;
 							overlay = !overlay;
 						}
 
@@ -97,13 +97,13 @@
 
 			function onMouseEnter(event){
 				//console.log("mouse is in")
-				mousein = true
+				mousein = true;
 
 			}
 
 			function onMouseLeave(event){
 				//console.log("mouse is out")
-				mousein = false
+				mousein = false;
 			}
 
 
@@ -127,36 +127,36 @@
 					return;
 				} else {
 					if(keyName == " " && boids.length>0){
-						console.log("spacebar")
+						console.log("spacebar");
 						pause = !pause;
 					} else if(keyName == "Escape"){
-						console.log("escape")
+						console.log("escape");
 						if(overlay && Over.x > Over.width-4){
-							Over.slide = 0
+							Over.slide = 0;
 							overlay = !overlay;
 						} else if(overlay == false && Over.x < 4){
-							Over.slide = 0
+							Over.slide = 0;
 							overlay = !overlay;
 						}
 
 					} else if(keyName == "Shift"){
-						return
+						return;
 					} else if(keyName == "ArrowUp"){
-						Over.select--
+						Over.select--;
 						if(Over.select==-1){
-							Over.select = 3
+							Over.select = 3;
 						}
 					} else if(keyName == "ArrowDown"){
-						Over.select++
+						Over.select++;
 						if(Over.select==4){
-							Over.select = 0
+							Over.select = 0;
 						}
 					} else if(keyName == "ArrowLeft"){
-						sli(-1)
+						sli(-1);
 					} else if(keyName == "ArrowRight"){
-						sli(1)
+						sli(1);
 					} else {
-						console.log(keyName)
+						console.log(keyName);
 					}
 
 				}
@@ -186,42 +186,42 @@
 
 			class Boid{
 				constructor(){
-					this.x = randomRange(0, canvas.width)
-					this.y = randomRange(0, canvas.height)
-					this.angle = 2*Math.random()*Math.PI
-					this.va = 0
-					this.speed = randomRange(3, 12)
-					this.size = randomRange(7, 9)
-					this.r = randomRange(160, 240)
-					this.g = randomRange(160, 240)
-					this.b = randomRange(160, 240)
-					this.pressure = 0.8
+					this.x = randomRange(0, canvas.width);
+					this.y = randomRange(0, canvas.height);
+					this.angle = 2*Math.random()*Math.PI;
+					this.va = 0;
+					this.speed = randomRange(3, 12);
+					this.size = randomRange(7, 9);
+					this.r = randomRange(160, 240);
+					this.g = randomRange(160, 240);
+					this.b = randomRange(160, 240);
+					this.pressure = 0.8;
 					//this.color = 'rgba('+randomRange(140, 240)+', '+randomRange(140, 240)+', '+randomRange(140, 240)+', '+1+')';
 				}
 				calc(index){
-					var xspeed = 0
-					var yspeed = 0
+					var xspeed = 0;
+					var yspeed = 0;
 
-					var avoidx = 0
-					var avoidy = 0
-					this.pressure = 0.8
+					var avoidx = 0;
+					var avoidy = 0;
+					this.pressure = 0.8;
 					for(var i = 0; i < boids.length; i++){
 						if(index != i){
 							var boidist = dist(this, boids[i].x, boids[i].y);
 							var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
-							var repel
+							var repel;
 							if(boiddit < 31){
-								repel = (-4)*boiddit+178+bump
-								this.pressure = this.pressure + boiddit*0.002
+								repel = (-4)*boiddit+178+bump;
+								this.pressure = this.pressure + boiddit*0.002;
 							} else if(boiddit > 200){
-								repel = 0
+								repel = 0;
 								if(220<=boiddit && boiddit<=228){
 									//console.log(boiddit)
 									repel = -(boiddit-220)*(boiddit-230)*repelbump; // DAMN
 								}
 							} else {
 								if(boiddit < 80){
-									this.pressure = this.pressure + boiddit*0.0003
+									this.pressure = this.pressure + boiddit*0.0003;
 								}
 								repel = (boiddit-50)*(boiddit-200)/(50*(boiddit-30));
 							}
@@ -238,34 +238,34 @@
 					avoidx = 0.01*avoidx + avoidx/boids.length;
 					avoidy = 0.01*avoidy + avoidy/boids.length;
 
-					var windx = 0
-					var windy = 0
-					var borderslope = borderwidth/borderstrength
+					var windx = 0;
+					var windy = 0;
+					var borderslope = borderwidth/borderstrength;
 					if(borderwidth>=this.x){
-						windx = -this.x/borderslope+borderstrength
+						windx = -this.x/borderslope+borderstrength;
 					} else if(this.x>=canvas.width-borderwidth) {
-						windx = -(this.x-canvas.width)/borderslope-borderstrength
+						windx = -(this.x-canvas.width)/borderslope-borderstrength;
 					}
 
 					if(borderwidth>=this.y){
-						windy = -this.y/borderslope+borderstrength
+						windy = -this.y/borderslope+borderstrength;
 					} else if(this.y>=canvas.height-borderwidth) {
-						windy = -(this.y-canvas.height)/borderslope-borderstrength
+						windy = -(this.y-canvas.height)/borderslope-borderstrength;
 					}
 
 
-					var xccel = - avoidx + windx/25
-					var yccel = - avoidy + windy/25
+					var xccel = - avoidx + windx/25;
+					var yccel = - avoidy + windy/25;
 
 					if(-maxcell>xccel){
-						xccel = -maxcell
+						xccel = -maxcell;
 					} else if(xccel>maxcell){
-						xccel = maxcell
+						xccel = maxcell;
 					}
 					if(-maxcell>yccel){
-						yccel = -maxcell
+						yccel = -maxcell;
 					} else if(yccel>maxcell){
-						yccel = maxcell
+						yccel = maxcell;
 					}
 
 					xspeed = (this.speed * Math.sin(this.angle)+xccel)*friction;
@@ -274,14 +274,14 @@
 					//console.log(xspeed, yspeed);
 
 					if(-maxspeed>xspeed){
-						xspeed = -maxspeed
+						xspeed = -maxspeed;
 					} else if(xspeed>maxspeed){
-						xspeed = maxspeed
+						xspeed = maxspeed;
 					}
 					if(-maxspeed>yspeed){
-						yspeed = -maxspeed
+						yspeed = -maxspeed;
 					} else if(yspeed>maxspeed){
-						yspeed = maxspeed
+						yspeed = maxspeed;
 					}
 
 					/*
@@ -299,13 +299,13 @@
 					}
 					*/
 
-					var va = 0
+					var va = 0;
 					if(yspeed >= 0){
 						//console.log("down")
-						this.va = Math.atan(xspeed/yspeed) - this.angle
+						this.va = Math.atan(xspeed/yspeed) - this.angle;
 
 					} else {
-						this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle
+						this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle;
 						//console.log("up")
 					}
 
@@ -316,36 +316,36 @@
 						this.va = -maxturn;
 					}
 					*/
-					var mom = dist(this, mouseX, mouseY)
+					var mom = dist(this, mouseX, mouseY);
 
-					var facecursor = mom[2]-this.angle
+					var facecursor = mom[2]-this.angle;
 					if(facecursor > Math.PI){
 						while(facecursor > Math.PI){
-							facecursor += -2*Math.PI
+							facecursor += -2*Math.PI;
 						}
 					} else if(facecursor < -Math.PI){
 						while(facecursor < Math.PI){
-							facecursor += 2*Math.PI
+							facecursor += 2*Math.PI;
 						}
 					}
 
-					this.angle = this.angle + this.va
+					this.angle = this.angle + this.va;
 					if(mousein){
-						this.angle += (facecursor)*mouseinfluence
+						this.angle += (facecursor)*mouseinfluence;
 					}
-					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2))
+					this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2));
 
 
-					this.x = this.x + xspeed/* + (1 + pressure*1.2)*Math.sin(this.angle); */
-					this.y = this.y + yspeed/* + (1 + pressure*1.2)*Math.cos(this.angle); */
+					this.x = this.x + xspeed; /* + (1 + pressure*1.2)*Math.sin(this.angle); */
+					this.y = this.y + yspeed; /* + (1 + pressure*1.2)*Math.cos(this.angle); */
 
 				}
 				draw(){
 					this.size = Math.sqrt(this.speed+1.2)*1.8/this.pressure+1.5;
 
-					var red = this.r * Math.sin(this.angle)/3 + 174
-					var green = this.g * Math.sin(this.angle+2*Math.PI/3)/3 + 174
-					var blue = this.b * Math.sin(this.angle+4*Math.PI/3)/3 + 174
+					var red = this.r * Math.sin(this.angle)/3 + 174;
+					var green = this.g * Math.sin(this.angle+2*Math.PI/3)/3 + 174;
+					var blue = this.b * Math.sin(this.angle+4*Math.PI/3)/3 + 174;
 
 					if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
 						var lighten = 0;
@@ -383,31 +383,37 @@
 
 			class Overlay{
 				constructor(){
-					this.slide = 0
-					this.x = 0
-					this.width = canvas.width/3
-					this.select = 0
+					this.slide = 0;
+					this.x = 0;
+					this.width = canvas.width/3;
+					this.select = 0;
 				}
 				calc(neg){
 					if(this.x<this.width -1|| neg > 0){
+<<<<<<< HEAD
 						this.slide += 1
 						this.x = this.width/(1+Math.pow(Math.E, (neg*180/this.width)*(this.slide-15))) //logistic sweepy curve
 						console.log(this.slide, this.x)
+=======
+						this.slide += 1;
+						this.x = this.width/(1+Math.pow(Math.E, (neg*100/this.width)*(this.slide-15))); //logistic sweepy curve
+						console.log(this.slide, this.x);
+>>>>>>> 79272e607ce614097dbbe1fd55571ee47b1deea2
 					} else if (this.x>this.width-1){
-						this.x = this.width
+						this.x = this.width;
 					}
 
 				}
 				slider(y, upper, lower, value, text, index){
 					if(index == this.select){
-						ctx.fillStyle = canvascolor = "rgba(230, 230, 255, 0.05)"
+						ctx.fillStyle = canvascolor = "rgba(230, 230, 255, 0.05)";
 						ctx.fillRect(this.x-49*this.width/50, y-115, 48*this.width/50, 200);
 					}
-					ctx.fillStyle = canvascolor = "rgba(19, 23, 26, 0.2)"
+					ctx.fillStyle = canvascolor = "rgba(19, 23, 26, 0.2)";
 					ctx.fillRect(this.x-24*this.width/25, y-103, 23*this.width/25, 176);
 
-					var diff = upper-lower
-					var point = (value/diff)*(3*this.width/4)
+					var diff = upper-lower;
+					var point = (value/diff)*(3*this.width/4);
 					ctx.lineWidth = canvas.height/100;
 					ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
 					ctx.lineJoin = 'round';
@@ -431,7 +437,7 @@
 
 				}
 				draw(){
-					ctx.fillStyle = "rgba(114, 137, 218, 0.3)"
+					ctx.fillStyle = "rgba(114, 137, 218, 0.3)";
 					ctx.fillRect(0, 0, this.x, canvas.height);
 
 					ctx.font = canvas.width / 60 + "px Arial";
@@ -440,17 +446,17 @@
 					ctx.fillText("Use arrow keys to navigate menu.", this.x-19*this.width/20, 55+canvas.width / 58);
 					ctx.fillText("Gaming.", this.x-19*this.width/20, 55+canvas.width / 29);
 					for(var i = 0; i < 4; i++){
-						this.slider(280+200*i, slidata[i][0], slidata[i][1], slidata[i][2], slidata[i][3], i)
+						this.slider(280+200*i, slidata[i][0], slidata[i][1], slidata[i][2], slidata[i][3], i);
 
 					}
 
 				}
 			}
-			Over = new Overlay
+			Over = new Overlay();
 
 			setInterval(function(){
 				if(boids.length != 0){
-					slidata[0][2] = boids.length
+					slidata[0][2] = boids.length;
 					if(!pause){
 						ctx.fillStyle = canvascolor;
 						ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -466,7 +472,7 @@
 						}
 						ctx.font = canvas.width / 15 + "px Arial";
 						ctx.fillStyle = '#7289DA';
-						strboid = boids.length.toString()
+						strboid = boids.length.toString();
 						ctx.fillText(boids.length, canvas.width - canvas.width*strboid.length/27 - canvas.width/30, canvas.width / 15);
 					} else {
 						ctx.font = canvas.width / 15 + "px Arial";
@@ -482,14 +488,14 @@
 					ctx.fillStyle = canvascolor;
 				}
 				if(overlay){
-					Over.calc(-1)
-					Over.draw()
+					Over.calc(-1);
+					Over.draw();
 				} else if (Over.x>2){
-					Over.calc(1)
-					Over.draw()
+					Over.calc(1);
+					Over.draw();
 				}
 
-			}, 14)
+			}, 14);
 
 
 			function scroll(event){
@@ -501,18 +507,18 @@
 					for(var i = 0; i < scrollnumber; i++){
 						boid = new Boid();
 						if(100>x){
-							x = 100
+							x = 100;
 						} else if(x>canvas.width-100) {
-							x = canvas.width-100
+							x = canvas.width-100;
 						}
 						if(100>y){
-							y = 100
+							y = 100;
 						} else if(y>canvas.height-100) {
-							y = canvas.height-100
+							y = canvas.height-100;
 						}
-						boid.x = x + randomRange(-50, 50)
-						boid.y = y + randomRange(-50, 50)
-						boids.push(boid)
+						boid.x = x + randomRange(-50, 50);
+						boid.y = y + randomRange(-50, 50);
+						boids.push(boid);
 						if(boids.length>250){
 							boids.shift();
 						}
@@ -543,9 +549,9 @@
 					ctx.fillStyle = '#7289DA';
 					ctx.fillText("scroll for boids :D", 80, canvas.height-100);
 				}
-				Over.width = canvas.width/3
+				Over.width = canvas.width/3;
 				if(Over.x > Over.width){
-					Over.x = Over.width
+					Over.x = Over.width;
 				}
 			}
 			canvasResize();
