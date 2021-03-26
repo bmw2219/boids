@@ -24,13 +24,14 @@ const maxturn	= 0.5;
 const borderwidth = 150;
 const borderstrength = 30;
 
-var slidata = [
-[250, 0, 0, "Boids"],
-[200, 0, 0, "Setting 2"],
-[200, 0, 0, "Setting 3"],
-[200, 0, 0, "Setting 4"]
+// Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
+var mainMenuElements = [
+["slider", 0, "Boids", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
+["slider", 0, "GAMING", 0, 1000, null, returnZero, 0],
+["text", "lksjdfklsdjfslkjf"]
 ];
 
+function returnZero(){return 0;}
 
 function dist(bo1d, x, y){
   xdist = x - bo1d.x;
@@ -77,6 +78,13 @@ function onMouseMove(event){
   //} else if(mouseY>canvas.height-100) {
   //	mouseY = canvas.height-100
   //}
+}
+
+function boidAmtAdjuster(amt){
+  // adjust amount of boids based on amount in slider
+}
+function getBoidAmt(amt){
+  return boids.length;
 }
 
 function onClick(event){
@@ -172,11 +180,10 @@ function sli(effect){
 }
 
 
-Over = new Overlay();
+Over = new Overlay(mainMenuElements);
 
 setInterval(function(){
   if(boids.length != 0){
-    slidata[0][2] = boids.length;
     ctx.fillStyle = canvascolor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = canvas.width / 15 + "px Arial";
