@@ -6,7 +6,8 @@ class Overlay{
     this.select = 0;
     this.elements = [];
     this.processElementInput(elementsInput);
-    this.currentElementY = 0;
+    this.currentElementY = -100;
+    this.defaultHeight = -100;
 
   }
   processElementInput(elementsInput){
@@ -27,6 +28,21 @@ class Overlay{
     }
 
   }
+  clickEvent(x, y){
+    for(var e of this.elements){
+      e.clickEvent(x, y);
+    }
+  }
+  releaseEvent(){
+    for(var e of this.elements){
+      e.releaseEvent();
+    }
+  }
+  mouseMove(x, y){
+    for(var e of this.elements){
+      e.mouseMove(x, y);
+    }
+  }
   draw(){
     ctx.fillStyle = "rgba(114, 137, 218, 0.3)";
     ctx.fillRect(0, 0, this.x, canvas.height);
@@ -36,7 +52,7 @@ class Overlay{
     // ctx.fillText("Pause the boids with spacebar.", this.x-19*this.width/20, 55);
     // ctx.fillText("Use arrow keys to navigate menu.", this.x-19*this.width/20, 55+canvas.width / 58);
     // ctx.fillText("Gaming.", this.x-19*this.width/20, 55+canvas.width / 29);
-    this.currentElementY = 0;
+    this.currentElementY = this.defaultHeight;
     for(var e of this.elements){
       e.draw(this.x, this.currentElementY);
       this.currentElementY += e.elementHeight;
