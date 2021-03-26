@@ -26,11 +26,14 @@ const borderwidth = 150;
 const borderstrength = 30;
 
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
+// Formatting for text: ["text", text, size]
 var mainMenuElements = [
+["text", "Title!!!!!!!", 1.5],
 ["slider", 0, "Boids", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
 ["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
-["text", "lksjdfklsdjfslkjf"]
+["text", "good morning daddy omg look at this!! text wrapping!! look its so hip and cool doesnt this just make you feel so good inside", 1],
+["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0]
 ];
 
 function updateMouseInfluence(amt){mouseinfluence=amt/100;}
@@ -83,7 +86,7 @@ function boidAmtAdjuster(amt){
   for(var i = 0; i < Math.abs(amt-boids.length); i++){
     if(amt > currentAmt){
       x = randomRange(0, canvas.width);
-      y = randomRange(0, canvas.length);
+      y = randomRange(0, canvas.height);
       boid = new Boid();
       if(100>x){
         x = 100;
@@ -298,7 +301,7 @@ function canvasResize() {
     ctx.fillStyle = '#7289DA';
     ctx.fillText("scroll for boids :D", 80, canvas.height-100);
   }
-  Over.width = canvas.width/3;
+  Over.updateWidth(canvas.width);
   if(Over.x > Over.width){
     Over.x = Over.width;
   }
