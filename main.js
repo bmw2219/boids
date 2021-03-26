@@ -16,9 +16,9 @@ const highlights = true;
 const auras = true;
 const friction = 0.93; // sldkjfsdlkf figure it out later
 const maxspeed = 20;
-const bump = 40; // bigger = less clumped (highlighted) boids
-const mouseinfluence = 1; // max: .2 min: 0
-const scrollnumber = 5;
+var bump = 40; // bigger = less clumped (highlighted) boids
+var mouseinfluence = 0.01; // max: 1 min: 0 default: 0.01
+var scrollnumber = 5; //min: 1 max: 10 default: 5
 const repelbump = 1/100;
 const maxcell = 10;
 const maxturn	= 0.5;
@@ -28,11 +28,16 @@ const borderstrength = 30;
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
 var mainMenuElements = [
 ["slider", 0, "Boids", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
-["slider", 0, "GAMING", 0, 1000, null, returnZero, 0],
+["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
+["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
 ["text", "lksjdfklsdjfslkjf"]
 ];
 
-function returnZero(){return 0;}
+function updateMouseInfluence(amt){mouseinfluence=amt/100;}
+function getMouseInfluence(){return mouseinfluence*100;}
+function updateWaveIntensity(amt){bump=amt;}
+function getWaveIntensity(){return bump;}
+
 
 function dist(bo1d, x, y){
   xdist = x - bo1d.x;
@@ -155,18 +160,13 @@ document.addEventListener('keydown', (event) => {
         overlay = !overlay;
       }
 
+
     } else if(keyName == "Shift"){
       return;
     } else if(keyName == "ArrowUp"){
-      Over.select--;
-      if(Over.select==-1){
-        Over.select = 3;
-      }
+      Over.defaultHeight -= 10;
     } else if(keyName == "ArrowDown"){
-      Over.select++;
-      if(Over.select==4){
-        Over.select = 0;
-      }
+      Over.defaultHeight += 10;
     } else if(keyName == "ArrowLeft"){
       sli(-1);
     } else if(keyName == "ArrowRight"){
