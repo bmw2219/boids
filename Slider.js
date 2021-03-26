@@ -33,9 +33,12 @@ class Slider {
     } else {
       this.selected = false;
     }
-    if(this.isBeingClicked && this.sliderLocationRange[0] <= x && x <= this.sliderLocationRange[1]){
+    if(this.isBeingClicked){
+      if(this.sliderLocationRange[0] >  x){var newX = this.sliderLocationRange[0];}
+      else if(x > this.sliderLocationRange[1]) {var newX = this.sliderLocationRange[1];}
+      else {var newX = x;}
       var pixelRange = this.sliderLocationRange[1] - this.sliderLocationRange[0];
-      this.value = Math.round(this.range*((x-this.sliderLocationRange[0])/pixelRange), this.roundPlaces);
+      this.value = Math.round(this.range*((newX-this.sliderLocationRange[0])/pixelRange), this.roundPlaces);
       this.updateFunc(this.value);
     }
   }
