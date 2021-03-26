@@ -27,6 +27,21 @@ class Overlay{
     }
 
   }
+  clickEvent(x, y){
+    for(var e of this.elements){
+      e.clickEvent(x, y);
+    }
+  }
+  releaseEvent(){
+    for(var e of this.elements){
+      e.releaseEvent();
+    }
+  }
+  mouseMove(x, y){
+    for(var e of this.elements){
+      e.mouseMove(x, y);
+    }
+  }
   draw(){
     ctx.fillStyle = "rgba(114, 137, 218, 0.3)";
     ctx.fillRect(0, 0, this.x, canvas.height);

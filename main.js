@@ -9,6 +9,7 @@ var mouseY = 0;
 var pause = false;
 var overlay = false;
 var mousein = false;
+var clicking = false;
 
 // CUSTOMIZABLES!!!
 const highlights = true;
@@ -68,16 +69,8 @@ function onMouseMove(event){
 
   mouseX = event.pageX;
   mouseY = event.pageY;
-  //if(100>mouseX){
-  //	mouseX = 100
-  //} else if(mouseX>canvas.width-100) {
-  //	mouseX = canvas.width-100
-  //}
-  //if(100>mouseY){
-  //	mouseY = 100
-  //} else if(mouseY>canvas.height-100) {
-  //	mouseY = canvas.height-100
-  //}
+  Over.mouseMove(mouseX, mouseY)
+
 }
 
 function boidAmtAdjuster(amt){
@@ -88,7 +81,11 @@ function getBoidAmt(amt){
 }
 
 function onClick(event){
-  // nothing for now
+  Over.clickEvent(event.clientX, event.clientY);
+}
+
+function onRelease(event){
+  Over.releaseEvent();
 }
 
 function onMouseEnter(event){
@@ -106,6 +103,7 @@ function onMouseLeave(event){
 canvas.addEventListener("wheel", scroll);
 canvas.addEventListener('mousemove', onMouseMove);
 canvas.addEventListener('mousedown', onClick);
+canvas.addEventListener("mouseup", onRelease)
 canvas.addEventListener('mouseenter', onMouseEnter);
 canvas.addEventListener('mouseleave', onMouseLeave);
 window.onresize = canvasResize;
