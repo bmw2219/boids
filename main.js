@@ -14,10 +14,10 @@ var clicking = false;
 // CUSTOMIZABLES!!!
 const highlights = true;
 const auras = true;
-const friction = 0.93;
+const friction = 0.93; // sldkjfsdlkf figure it out later
 const maxspeed = 20;
 const bump = 40; // bigger = less clumped (highlighted) boids
-const mouseinfluence = 1/100;
+const mouseinfluence = 1; // max: .2 min: 0
 const scrollnumber = 5;
 const repelbump = 1/100;
 const maxcell = 10;
@@ -74,7 +74,29 @@ function onMouseMove(event){
 }
 
 function boidAmtAdjuster(amt){
-  // adjust amount of boids based on amount in slider
+  var currentAmt = boids.length;
+  for(var i = 0; i < Math.abs(amt-boids.length); i++){
+    if(amt > currentAmt){
+      x = randomRange(0, canvas.width);
+      y = randomRange(0, canvas.length);
+      boid = new Boid();
+      if(100>x){
+        x = 100;
+      } else if(x>canvas.width-100) {
+        x = canvas.width-100;
+      }
+      if(100>y){
+        y = 100;
+      } else if(y>canvas.height-100) {
+        y = canvas.height-100;
+      }
+      boid.x = x + randomRange(-50, 50);
+      boid.y = y + randomRange(-50, 50);
+      boids.push(boid);
+    } else {
+      boids.shift();
+    }
+  }
 }
 function getBoidAmt(amt){
   return boids.length;

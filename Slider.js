@@ -14,20 +14,29 @@ class Slider {
     this.checkUpdateFunc = checkUpdateFunc;
     this.isBeingClicked = false;
     this.sliderPos = [];
+    this.sliderLocationRange = [];
     this.elementBox = [];
   }
   clickEvent(x, y){
-
+    if(Math.sqrt(Math.pow(x-this.sliderPos[0], 2) + Math.pow(y-this.sliderPos[1], 2)) <= this.sliderPos[2]){
+      this.isBeingClicked = true;
+    }
   }
   releaseEvent(){
-
+    if(this.isBeingClicked){
+      this.isBeingClicked = false;
+    }
   }
   mouseMove(x, y){
     if(this.elementBox[0] < x && x < this.elementBox[2] && this.elementBox[1] < y && y < this.elementBox[3]){
       this.selected = true;
-      console.log(this.name, this.elementBox, x, y);
     } else {
       this.selected = false;
+    }
+    if(this.isBeingClicked && this.sliderLocationRange[0] <= x && x <= this.sliderLocationRange[1]){
+      var pixelRange = this.sliderLocationRange[1] - this.sliderLocationRange[0];
+      this.value = Math.round(this.range*((x-this.sliderLocationRange[0])/pixelRange), this.roundPlaces);
+      this.updateFunc(this.value);
     }
   }
   draw(containerX, elementY){
@@ -61,6 +70,7 @@ class Slider {
     ctx.beginPath();
     ctx.moveTo(containerX-7*this.containerWidth/8, elementY+5*this.elementHeight/8);
     ctx.lineTo(containerX-this.containerWidth/8, elementY+5*this.elementHeight/8);
+    this.sliderLocationRange = [containerX-7*this.containerWidth/8, containerX-this.containerWidth/8];
     ctx.fillStyle = 'rgba(50, 50, 50, 0.5)';
     ctx.fill();
     ctx.closePath();
@@ -72,7 +82,7 @@ class Slider {
     ctx.fill();
     ctx.closePath();
     ctx.stroke();
-    this.sliderPos = [containerX-7*this.containerWidth/8+point, elementY+5*this.elementHeight/8];
+    this.sliderPos = [containerX-7*this.containerWidth/8+point, elementY+5*this.elementHeight/8, this.containerWidth/48];
 
     ctx.font = canvas.width / 90 + "px Arial";
     ctx.fillStyle = 'rgba(200, 200, 255, 0.5)';
