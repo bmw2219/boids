@@ -6,10 +6,14 @@ class Boid{
     this.va = 0;
     this.speed = randomRange(3, 12);
     this.size = randomRange(7, 9);
-    this.r = randomRange(160, 240);
-    this.g = randomRange(160, 240);
-    this.b = randomRange(160, 240);
+    // this.r = randomRange(160, 240);
+    // this.g = randomRange(160, 240);
+    // this.b = randomRange(160, 240);
+    this.r = randomRange(40,60);
+    this.g = randomRange(40,60);
+    this.b = randomRange(40,60);
     this.pressure = 0.8;
+    this.species = randomRange(0,2);
     //this.color = 'rgba('+randomRange(140, 240)+', '+randomRange(140, 240)+', '+randomRange(140, 240)+', '+1+')';
   }
   calc(index){
@@ -19,25 +23,35 @@ class Boid{
     var avoidx = 0;
     var avoidy = 0;
     this.pressure = 0.8;
-    for(var i = 0; i < boids.length; i++){
+    for(var i = 0; i < boids.length; i++){ // BOID DISTANCE CHECKING
       if(index != i){
         var boidist = dist(this, boids[i].x, boids[i].y);
         var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
-        var repel;
+        var repel = 0;
+        var rightspecies = this.species==boids[i].species;
         if(boiddit < 31){
           repel = (-4)*boiddit+178+bump;
           this.pressure = this.pressure + boiddit*0.002;
-        } else if(boiddit > 200){
+        } else if(boiddit > 200 && rightspecies){
           repel = 0;
           if(220<=boiddit && boiddit<=228){
-            //console.log(boiddit)
-            repel = -(boiddit-220)*(boiddit-230)*repelbump; // DAMN
+            if(rightspecies){
+              repel = -(boiddit-220)*(boiddit-230)*repelbump; // DAMN
+            } else{
+              repel = -(boiddit-220)*(boiddit-230)*1; // DAMN
+            }
           }
         } else {
           if(boiddit < 80){
             this.pressure = this.pressure + boiddit*0.0003;
           }
-          repel = (boiddit-50)*(boiddit-200)/(50*(boiddit-30));
+          if(rightspecies){
+            repel = (boiddit-50)*(boiddit-200)/(50*(boiddit-30));
+          } else{
+            if(boiddit<70){
+              repel = -4*boiddit+280;
+            } // MAIN EQUATION SORT OF
+          }
         }
 
 
@@ -156,11 +170,31 @@ class Boid{
   }
   draw(){
     this.size = Math.sqrt(this.speed+1.2)*1.8/this.pressure+1.5;
-
-    var red = this.r * Math.sin(this.angle)/3 + 174;
-    var green = this.g * Math.sin(this.angle+2*Math.PI/3)/3 + 174;
-    var blue = this.b * Math.sin(this.angle+4*Math.PI/3)/3 + 174;
-
+    ctx.lineWidth = this.size;
+    ctx.lineJoin = 'round';
+    if(speciescolors){
+      switch(this.species){
+        case 0:
+          var red = this.r * Math.sin(this.angle) + 195 + 30;
+          var blue = this.b * Math.sin(this.angle+Math.PI) + 195 + 30;
+          var green = this.g*2.5;
+          break;
+        case 1:
+          var blue = this.b * Math.sin(this.angle) + 195 + 40;
+          var green = this.g * Math.sin(this.angle+Math.PI) + 195 + 40;
+          var red = this.g*2.5;
+          break;
+        case 2:
+          var green = this.g * Math.sin(this.angle) + 195 + 40;
+          var red = this.r * Math.sin(this.angle+Math.PI) + 195 + 40;
+          var blue = this.g*2.5;
+          break;
+      }
+    } else{
+      var red = this.r * 1.3 * Math.sin(this.angle) + 180;
+      var green = this.g * 1.3 * Math.sin(this.angle+2*Math.PI/3) + 180;
+      var blue = this.b * 1.3 * Math.sin(this.angle+4*Math.PI/3) + 180;
+    }
     if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
       var lighten = 0;
       if(highlights){
@@ -173,20 +207,64 @@ class Boid{
         ctx.fill();
       }
 
-      ctx.lineWidth = this.size;
-      ctx.strokeStyle = 'rgba('+(red+lighten)+', '+(green+lighten)+', '+(blue+lighten)+', '+1+')';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x+this.size*Math.sin(this.angle+1.35*Math.PI), this.y+this.size*Math.cos(this.angle+1.35*Math.PI));
-      ctx.lineTo(this.x+this.size*1.3*Math.sin(this.angle), this.y+this.size*1.3*Math.cos(this.angle));
-      ctx.lineTo(this.x+this.size*Math.sin(this.angle+0.65*Math.PI), this.y+this.size*Math.cos(this.angle+0.65*Math.PI));
-      ctx.lineTo(this.x, this.y);
+      var color = 'rgba('+(red+lighten)+', '+(green+lighten)+', '+(blue+lighten)+', '+1+')';
+      ctx.strokeStyle = color
+      switch(this.species){ //4 seperate boid shapes
+        case 0: //round heart
+          ctx.lineWidth = this.size;
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x+this.size*Math.sin(this.angle+1.35*Math.PI), this.y+this.size*Math.cos(this.angle+1.35*Math.PI));
+          ctx.lineTo(this.x+this.size*1.3*Math.sin(this.angle), this.y+this.size*1.3*Math.cos(this.angle));
+          ctx.lineTo(this.x+this.size*Math.sin(this.angle+0.65*Math.PI), this.y+this.size*Math.cos(this.angle+0.65*Math.PI));
+          ctx.lineTo(this.x, this.y);
+          break;
+        case 1: //avocado
+          var tangent = 1.2
+          ctx.fillStyle = color
+          this.size += 0.5;
+          ctx.lineWidth = this.size*0.6;
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 0.8*this.size, 0, 2*Math.PI);
+          ctx.fillStyle = 'black'
+          ctx.fill();
+          ctx.moveTo(this.x-this.size*0.8*Math.sin(this.angle+tangent), this.y-this.size*0.8*Math.cos(this.angle+tangent));
+          ctx.lineTo(this.x-this.size*2*Math.sin(this.angle), this.y-this.size*2*Math.cos(this.angle));
+          ctx.lineTo(this.x-this.size*0.8*Math.sin(this.angle-tangent), this.y-this.size*0.8*Math.cos(this.angle-tangent));
+          ctx.moveTo(this.x, this.y);
+          break;
+        // case 2: //sharp heart
+        //   this.size += 1;
+        //   ctx.lineWidth = this.size/5;
+        //   ctx.lineJoin = 'miter';
+        //   ctx.beginPath();
+        //   ctx.moveTo(this.x, this.y);
+        //   ctx.lineTo(this.x+this.size*Math.sin(this.angle+1.35*Math.PI), this.y+this.size*Math.cos(this.angle+1.35*Math.PI));
+        //   ctx.lineTo(this.x+this.size*1.3*Math.sin(this.angle), this.y+this.size*1.3*Math.cos(this.angle));
+        //   ctx.lineTo(this.x+this.size*Math.sin(this.angle+0.65*Math.PI), this.y+this.size*Math.cos(this.angle+0.65*Math.PI));
+        //   ctx.lineTo(this.x, this.y);
+        //   break;
+//        case 2: //stroke circle
+//          this.size += 1;
+          // ctx.lineWidth = this.size/5;
+          // ctx.lineJoin = 'miter';
+          // ctx.beginPath();
+          // ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+          // break;
+        case 2: //wings
+          this.size += 1;
+          ctx.lineWidth = this.size/5;
+          ctx.lineJoin = 'miter';
+          ctx.beginPath();
+          line(this.x, this.y, this.angle, this.size, color, ctx.lineWidth);
+          ctx.arc(this.x, this.y, this.size, -this.angle-0.5, -this.angle+0.5+Math.PI);
+          break;
+
+      }
       ctx.closePath();
       ctx.stroke();
-
-
-
       //line(this.x, this.y, distance[2], Math.sqrt(Math.pow(distance[0], 2)+Math.pow(distance[1], 2))/6, 'green');
       //line(this.x, this.y, Math.PI/2, distance[0]/6, 'yellow');
       //line(this.x, this.y, Math.PI, -distance[1]/6, 'yellow');
