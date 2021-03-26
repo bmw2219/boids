@@ -11,6 +11,7 @@ var overlay = false;
 var mousein = false;
 
 // CUSTOMIZABLES!!!
+var speciescolors = true;
 const highlights = true;
 const auras = true;
 const friction = 0.93;
