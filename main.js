@@ -12,20 +12,21 @@ var mousein = false;
 var clicking = false;
 
 // CUSTOMIZABLES!!!
-var speciescolors = true;
-var colordiff = 30;
+var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
+var speciescolors = true; //if false, shows original color scheme
+var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
 const highlights = true;
 const auras = true;
-const friction = 0.93; // sldkjfsdlkf figure it out later
-const maxspeed = 20;
+const friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
+const maxspeed = 20; // 1-50 default 20
 var bump = 40; // bigger = less clumped (highlighted) boids
 var mouseinfluence = 0.01; // max: 1 min: 0 default: 0.01
 var scrollnumber = 5; //min: 1 max: 10 default: 5
-const repelbump = 1/100;
-const maxcell = 10;
+const repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
+const maxcell = 4; // 0.1 to 10, default.... 4????
 const maxturn	= 0.5;
-const borderwidth = 150;
-const borderstrength = 30;
+const borderwidth = 125; //0 to 300 or so, default 125
+const borderstrength = 30; //0 to 200, default 30
 
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
 // Formatting for text: ["text", text, size]

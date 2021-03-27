@@ -164,8 +164,8 @@ class Boid{
     this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2));
 
 
-    this.x = this.x + xspeed; /* + (1 + pressure*1.2)*Math.sin(this.angle); */
-    this.y = this.y + yspeed; /* + (1 + pressure*1.2)*Math.cos(this.angle); */
+    this.x = this.x + xspeed + constantspeed*Math.sin(this.angle); /* + (1 + pressure*1.2)*Math.sin(this.angle); */
+    this.y = this.y + yspeed + constantspeed*Math.cos(this.angle); /* + (1 + pressure*1.2)*Math.cos(this.angle); */
 
   }
   draw(){
