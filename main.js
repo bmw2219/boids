@@ -13,6 +13,7 @@ var clicking = false;
 
 // CUSTOMIZABLES!!!
 var speciescolors = true;
+var colordiff = 30;
 const highlights = true;
 const auras = true;
 const friction = 0.93; // sldkjfsdlkf figure it out later

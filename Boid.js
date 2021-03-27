@@ -175,18 +175,18 @@ class Boid{
     if(speciescolors){
       switch(this.species){
         case 0:
-          var red = this.r * Math.sin(this.angle) + 195 + 30;
-          var blue = this.b * Math.sin(this.angle+Math.PI) + 195 + 30;
+          var red = this.r * Math.sin(this.angle) + 195 + colordiff;
+          var blue = this.b * Math.sin(this.angle+Math.PI) + 195 + colordiff;
           var green = this.g*2.5;
           break;
         case 1:
-          var blue = this.b * Math.sin(this.angle) + 195 + 40;
-          var green = this.g * Math.sin(this.angle+Math.PI) + 195 + 40;
+          var blue = this.b * Math.sin(this.angle) + 195 + colordiff;
+          var green = this.g * Math.sin(this.angle+Math.PI) + 195 + colordiff;
           var red = this.g*2.5;
           break;
         case 2:
-          var green = this.g * Math.sin(this.angle) + 195 + 40;
-          var red = this.r * Math.sin(this.angle+Math.PI) + 195 + 40;
+          var green = this.g * Math.sin(this.angle) + 195 + colordiff;
+          var red = this.r * Math.sin(this.angle+Math.PI) + 195 + colordiff;
           var blue = this.g*2.5;
           break;
       }
