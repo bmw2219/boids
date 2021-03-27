@@ -2,12 +2,12 @@ class Overlay{
   constructor(elementsInput){
     this.slide = 0;
     this.x = 0;
-    this.width = canvas.width/3;
+    this.width = 0; //placeholder value
     this.select = 0;
     this.elements = [];
     this.processElementInput(elementsInput);
-    this.currentElementY = -100;
-    this.defaultHeight = -100;
+    this.currentElementY = 0;
+    this.defaultHeight = 0; //placeholder value
 
   }
   processElementInput(elementsInput){
@@ -15,8 +15,14 @@ class Overlay{
     for(var element of elementsInput){
       if(element[0] == "slider"){
         this.elements.push(new Slider(element[2], element[1], element[3], element[4], this.width, element[5], this, element[6], element[7]));
+      } else if(element[0] == "text"){
+        this.elements.push(new TextElement(element[1], element[2], this));
       }
     }
+  }
+  updateWidth(width){
+    this.width = width/Math.PI;
+    this.defaultHeight = this.width/25;
   }
   calc(neg){
     if(this.x<this.width -1|| neg > 0){
@@ -47,11 +53,6 @@ class Overlay{
     ctx.fillStyle = "rgba(114, 137, 218, 0.3)";
     ctx.fillRect(0, 0, this.x, canvas.height);
 
-    // ctx.font = canvas.width / 60 + "px Arial";
-    // ctx.fillStyle = 'rgba(200, 200, 255, 0.5)';
-    // ctx.fillText("Pause the boids with spacebar.", this.x-19*this.width/20, 55);
-    // ctx.fillText("Use arrow keys to navigate menu.", this.x-19*this.width/20, 55+canvas.width / 58);
-    // ctx.fillText("Gaming.", this.x-19*this.width/20, 55+canvas.width / 29);
     this.currentElementY = this.defaultHeight;
     for(var e of this.elements){
       e.draw(this.x, this.currentElementY);
