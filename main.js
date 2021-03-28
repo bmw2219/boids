@@ -15,34 +15,42 @@ var clicking = false;
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
 var speciescolors = true; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
-const highlights = true;
-const auras = true;
-const friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
-const maxspeed = 20; // 1-50 default 20
+var highlights = true;
+var auras = true;
+var friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
+var maxspeed = 20; // 1-50 default 20
 var bump = 40; // bigger = less clumped (highlighted) boids
 var mouseinfluence = 0.01; // max: 1 min: 0 default: 0.01
 var scrollnumber = 5; //min: 1 max: 10 default: 5
-const repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
-const maxcell = 4; // 0.1 to 10, default.... 4????
-const maxturn	= 0.5;
-const borderwidth = 125; //0 to 300 or so, default 125
-const borderstrength = 30; //0 to 200, default 30
+var repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
+var maxcell = 4; // 0.1 to 10, default.... 4????
+var maxturn	= 0.5;
+var borderwidth = 125; //0 to 300 or so, default 125
+var borderstrength = 30; //0 to 200, default 30
 
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
 // Formatting for text: ["text", text, size]
+// Formatting for switch: ["switch", value, name, checkUpdateFunc, updateFunc]
 var mainMenuElements = [
-["text", "Title!!!!!!!", 1.5],
-["slider", 0, "Boids", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
+["text", "Boids", 1.5],
+["slider", 0, "Boid Amount", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
 ["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
+["switch", auras, "Aura", getAuras, setAuras],
+["switch", auras, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
-["text", "good morning daddy omg look at this!! text wrapping!! look its so hip and cool doesnt this just make you feel so good inside", 1],
+["text", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed massa molestie, dapibus neque vel, aliquam justo. ", 1],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0]
 ];
 
+// ui update and getupdate functions
 function updateMouseInfluence(amt){mouseinfluence=amt/100;}
 function getMouseInfluence(){return mouseinfluence*100;}
 function updateWaveIntensity(amt){bump=amt;}
 function getWaveIntensity(){return bump;}
+function getAuras(){return auras;}
+function setAuras(setTo){auras = setTo;}
+function getSpeciesColors(){return speciescolors;}
+function setSpeciesColors(setTo){speciescolors = setTo;}
 
 
 function dist(bo1d, x, y){
