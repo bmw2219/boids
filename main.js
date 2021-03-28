@@ -244,9 +244,11 @@ setInterval(function(){
   }
   if(overlay){
     Over.calc(-1);
+    Over.scrollcalc();
     Over.draw();
   } else if (Over.x>2){
     Over.calc(1);
+    Over.scrollcalc();
     Over.draw();
   }
 
@@ -257,39 +259,43 @@ function scroll(event){
   var x = mouseX;
   var y = mouseY;
   delta = event.deltaX + event.deltaY + event.deltaZ;
-  if(delta<=-1 && !pause){
-  //console.log(mouseX, mouseY)
-    for(var i = 0; i < scrollnumber; i++){
-      boid = new Boid();
-      if(100>x){
-        x = 100;
-      } else if(x>canvas.width-100) {
-        x = canvas.width-100;
-      }
-      if(100>y){
-        y = 100;
-      } else if(y>canvas.height-100) {
-        y = canvas.height-100;
-      }
-      boid.x = x + randomRange(-50, 50);
-      boid.y = y + randomRange(-50, 50);
-      boids.push(boid);
-      if(boids.length>250){
-        boids.shift();
-      }
-    }
-  } else if(delta>=1 && !pause){
-    if(boids.length>0){
+  if(x<Over.x){
+      Over.scrollvelo=canvas.width*Math.sign(delta)/130;
+    //console.log(Over.scrolldest)
+  } else{
+    if(delta<=-1 && !pause){
+    //console.log(mouseX, mouseY)
       for(var i = 0; i < scrollnumber; i++){
-        boids.shift();
-        if(boids.length==0){
-          break;
+        boid = new Boid();
+        if(100>x){
+          x = 100;
+        } else if(x>canvas.width-100) {
+          x = canvas.width-100;
+        }
+        if(100>y){
+          y = 100;
+        } else if(y>canvas.height-100) {
+          y = canvas.height-100;
+        }
+        boid.x = x + randomRange(-50, 50);
+        boid.y = y + randomRange(-50, 50);
+        boids.push(boid);
+        if(boids.length>250){
+          boids.shift();
         }
       }
+    } else if(delta>=1 && !pause){
+      if(boids.length>0){
+        for(var i = 0; i < scrollnumber; i++){
+          boids.shift();
+          if(boids.length==0){
+            break;
+          }
+        }
 
+      }
     }
   }
-
 }
 
 
