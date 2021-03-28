@@ -18,6 +18,8 @@ class Overlay{
         this.elements.push(new Slider(element[2], element[1], element[3], element[4], this.width, element[5], this, element[6], element[7]));
       } else if(element[0] == "text"){
         this.elements.push(new TextElement(element[1], element[2], this));
+      } else if(element[0] == "switch"){
+        this.elements.push(new Switch(element[2], element[1], this, element[3], element[4]));
       }
     }
   }

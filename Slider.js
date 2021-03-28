@@ -25,11 +25,17 @@ class Slider {
   releaseEvent(){
     if(this.isBeingClicked){
       this.isBeingClicked = false;
+      canvas.style.cursor = "default";
     }
   }
   mouseMove(x, y){
     if(this.elementBox[0] < x && x < this.elementBox[2] && this.elementBox[1] < y && y < this.elementBox[3]){
       this.selected = true;
+      if(Math.sqrt(Math.pow(x-this.sliderPos[0], 2) + Math.pow(y-this.sliderPos[1], 2)) <= this.sliderPos[2] || this.isBeingClicked){
+        canvas.style.cursor = "pointer";
+      } else {
+        canvas.style.cursor = "default";
+      }
     } else {
       this.selected = false;
     }
@@ -46,6 +52,7 @@ class Slider {
     this.containerWidth = this.container.width;
     this.elementHeight = (1/3)*this.containerWidth;
     this.value = this.checkUpdateFunc();
+
 
     if(this.selected){
       ctx.fillStyle = "rgba(230, 230, 255, 0.05)";
