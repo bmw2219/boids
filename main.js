@@ -261,8 +261,7 @@ function scroll(event){
   delta = event.deltaX + event.deltaY + event.deltaZ;
   if(x<Over.x){
       Over.scrollvelo=Math.sqrt(Math.abs(Math.sign(delta)*canvas.width*canvas.width/18000+Over.scrollvelo*Over.scrollvelo*Math.sign(Over.scrollvelo)))*Math.sign(delta);
-      console.log(Over.scrollvelo)
-    //console.log(Over.scrolldest)
+      //console.log(Over.scrollvelo)
   } else{
     if(delta<=-1 && !pause){
     //console.log(mouseX, mouseY)
