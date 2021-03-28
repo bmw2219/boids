@@ -69,11 +69,11 @@ class Switch {
 
 
     if(this.locked) {
-      ctx.fillStyle = 'rgba(50, 50, 50, 0.5)';
+      ctx.fillStyle = 'rgba(50, 50, 50, 0.4)';
     } else if(this.value){
-      ctx.fillStyle = 'rgba(0, 200, 0, 0.5)';
+      ctx.fillStyle = 'rgba(100, 200, 100, 0.4)';
     } else if(this.value == false){
-      ctx.fillStyle = 'rgba(200, 100, 100, 0.5)';
+      ctx.fillStyle = 'rgba(200, 100, 100, 0.4)';
     }
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
 

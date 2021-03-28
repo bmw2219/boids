@@ -44,7 +44,7 @@ class Slider {
       else if(x > this.sliderLocationRange[1]) {var newX = this.sliderLocationRange[1];}
       else {var newX = x;}
       var pixelRange = this.sliderLocationRange[1] - this.sliderLocationRange[0];
-      this.value = Math.round(this.range*((newX-this.sliderLocationRange[0])/pixelRange), this.roundPlaces);
+      this.value = Math.round(this.range*((newX-this.sliderLocationRange[0])/pixelRange)+this.min, this.roundPlaces);
       this.updateFunc(this.value);
     }
   }
