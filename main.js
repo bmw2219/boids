@@ -260,7 +260,8 @@ function scroll(event){
   var y = mouseY;
   delta = event.deltaX + event.deltaY + event.deltaZ;
   if(x<Over.x){
-      Over.scrollvelo=canvas.width*Math.sign(delta)/130;
+      Over.scrollvelo=Math.sqrt(Math.abs(Math.sign(delta)*canvas.width*canvas.width/18000+Over.scrollvelo*Over.scrollvelo*Math.sign(Over.scrollvelo)))*Math.sign(delta);
+      console.log(Over.scrollvelo)
     //console.log(Over.scrolldest)
   } else{
     if(delta<=-1 && !pause){

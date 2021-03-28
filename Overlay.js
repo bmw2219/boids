@@ -37,8 +37,8 @@ class Overlay{
   }
   scrollcalc(){
     if(Math.abs(this.scrollvelo)>0.3){//arbitrary number to handle inaccuracies
-      this.scrollvelo = (Math.abs(this.scrollvelo)-canvas.width/2000)*Math.sign(this.scrollvelo);
-      console.log(this.scrollvelo);
+      this.scrollvelo = (Math.abs(this.scrollvelo)-canvas.width/1500)*Math.sign(this.scrollvelo);
+      //console.log(this.scrollvelo);
       this.defaultHeight = this.defaultHeight - this.scrollvelo;
       if(this.defaultHeight>this.width/25){
         this.defaultHeight = this.width/25;
