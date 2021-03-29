@@ -27,7 +27,7 @@ var maxcell = 4; // 0.1 to 10, default.... 4????
 var maxturn	= 0.5;
 var borderwidth = 125; //0 to 300 or so, default 125
 var borderstrength = 30; //0 to 200, default 30
-
+var spotlight = 20
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
 // Formatting for text: ["text", text, size]
 // Formatting for switch: ["switch", value, name, checkUpdateFunc, updateFunc]
@@ -225,10 +225,20 @@ setInterval(function(){
     strboid = boids.length.toString();
     ctx.fillText(boids.length, canvas.width - canvas.width*strboid.length/27 - canvas.width/30, canvas.width / 15);
     if(mousein){
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+
+      var gradient = ctx.createRadialGradient(mouseX,mouseY,spotlight, mouseX,mouseY,spotlight+30);
+
+      gradient.addColorStop(0, "rgba(87, 99, 108, 0.25)");
+      gradient.addColorStop(.8, "rgba(87, 99, 108, 0.0)");//canvascolor); //"rgba(19, 23, 26, 0.3)";
+      //gradient.addColorStop(1, canvascolor);
+
+      ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 50, 0, 2 * Math.PI);
+      ctx.arc(mouseX, mouseY, spotlight+30, 0, 2 * Math.PI);
       ctx.fill();
+      if(spotlight>20.1){
+        spotlight-=2;
+      }
     }
     if(!pause){
       for(var i = 0; i < boids.length; i++){
@@ -275,6 +285,9 @@ function scroll(event){
     //console.log(mouseX, mouseY)
       for(var i = 0; i < scrollnumber; i++){
         boid = new Boid();
+        if(spotlight<53){
+            spotlight+=16/scrollnumber;
+        }
         if(100>x){
           x = 100;
         } else if(x>canvas.width-100) {
