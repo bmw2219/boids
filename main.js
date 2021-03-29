@@ -12,6 +12,7 @@ var mousein = false;
 var clicking = false;
 
 // CUSTOMIZABLES!!!
+var speciesrepel = true; //enable racis--
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
 var speciescolors = true; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
@@ -202,8 +203,8 @@ setInterval(function(){
 
       var gradient = ctx.createRadialGradient(mouseX,mouseY,spotlight, mouseX,mouseY,spotlight+30);
 
-      gradient.addColorStop(0, "rgba(87, 99, 108, 0.25)");
-      gradient.addColorStop(.8, "rgba(87, 99, 108, 0.0)");//canvascolor); //"rgba(19, 23, 26, 0.3)";
+      gradient.addColorStop(0, "rgba(87, 99, 108, 0.2)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.0)");//canvascolor); //"rgba(19, 23, 26, 0.3)";
       //gradient.addColorStop(1, canvascolor);
 
       ctx.fillStyle = gradient;

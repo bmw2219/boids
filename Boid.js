@@ -28,7 +28,11 @@ class Boid{
         var boidist = dist(this, boids[i].x, boids[i].y);
         var boiddit = Math.sqrt(Math.pow(boidist[0], 2)+Math.pow(boidist[1], 2)); // distance to boid
         var repel = 0;
-        var rightspecies = this.species==boids[i].species;
+        if(speciesrepel){
+          var rightspecies = this.species==boids[i].species;
+        } else {
+          var rightspecies = true;
+        }
         if(boiddit < 31){
           repel = (-4)*boiddit+178+bump;
           this.pressure = this.pressure + boiddit*0.002;
@@ -99,18 +103,6 @@ class Boid{
     xspeed = (this.speed * Math.sin(this.angle)+xccel)*friction;
     yspeed = (this.speed * Math.cos(this.angle)+yccel)*friction;
 
-    //console.log(xspeed, yspeed);
-
-    if(-maxspeed>xspeed){
-      xspeed = -maxspeed;
-    } else if(xspeed>maxspeed){
-      xspeed = maxspeed;
-    }
-    if(-maxspeed>yspeed){
-      yspeed = -maxspeed;
-    } else if(yspeed>maxspeed){
-      yspeed = maxspeed;
-    }
 
     /*
     var maxvx = maxspeed * Math.sin(this.angle)
@@ -163,6 +155,20 @@ class Boid{
     }
     this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2));
 
+    //console.log(xspeed, yspeed);
+    var maxvx = maxspeed*Math.sin(this.angle)+1;
+    var maxvy = maxspeed*Math.cos(this.angle)+1;
+    //console.log(xspeed,yspeed,maxvx,maxvy,this.angle)
+    if(maxvx<xspeed&&xspeed>0){
+      xspeed = maxvx;
+    } else if(0>xspeed&&xspeed<maxvx){
+      xspeed = maxvx;
+    }
+    if(maxvy<yspeed&&yspeed>0){
+      yspeed = maxvy;
+    } else if(0>yspeed&&yspeed<maxvy){
+      yspeed = maxvy;
+    }
 
     this.x = this.x + xspeed + constantspeed*Math.sin(this.angle); /* + (1 + pressure*1.2)*Math.sin(this.angle); */
     this.y = this.y + yspeed + constantspeed*Math.cos(this.angle); /* + (1 + pressure*1.2)*Math.cos(this.angle); */
