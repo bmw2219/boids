@@ -18,7 +18,7 @@ var speciescolors = true; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
 var highlights = true;
 var auras = true;
-var friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
+var friction = 0.93; // 0.01 to 1.1, and 0.70 to 0.99, default 0.93
 var maxspeed = 20; // 1-50 default 20
 var bump = 40; // bigger = less clumped (highlighted) boids
 var mouseinfluence = 0.01; // max: 1 min: 0 default: 0.01
@@ -35,12 +35,12 @@ var spotlight = 20
 var mainMenuElements = [
 ["text", "Boids", 1.5],
 ["slider", 0, "Boid Amount", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
-["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
 ["switch", auras, "Aura", getAuras, setAuras],
-["switch", auras, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
+["switch", speciescolors, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
+["switch", highlights, "Whitening Pressure Points", getHighlights, setHighlights],
+["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
-["text", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed massa molestie, dapibus neque vel, aliquam justo. ", 1],
-["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0]
+["slider", 93, "Friction", 1, 110, updateFriction, getFriction, 0]
 ];
 
 // ui update and getupdate functions
@@ -52,6 +52,10 @@ function getAuras(){return auras;}
 function setAuras(setTo){auras = setTo;}
 function getSpeciesColors(){return speciescolors;}
 function setSpeciesColors(setTo){speciescolors = setTo;}
+function getHighlights(){return highlights;}
+function setHighlights(setTo){highlights = setTo;}
+function updateFriction(amt){friction=amt/100;}
+function getFriction(){return friction*100;}
 
 
 function dist(bo1d, x, y){
@@ -273,8 +277,8 @@ function scroll(event){
         } else if(y>canvas.height-100) {
           y = canvas.height-100;
         }
-        boid.x = x + randomRange(-50, 50);
-        boid.y = y + randomRange(-50, 50);
+        boid.x = x + Math.random()*100-50;
+        boid.y = y + Math.random()*100-50;
         boids.push(boid);
         if(boids.length>250){
           boids.shift();
