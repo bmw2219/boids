@@ -181,38 +181,12 @@ document.addEventListener('keydown', (event) => {
       Over.defaultHeight -= 10;
     } else if(keyName == "ArrowDown"){
       Over.defaultHeight += 10;
-    } else if(keyName == "ArrowLeft"){
-      sli(-1);
-    } else if(keyName == "ArrowRight"){
-      sli(1);
     } else {
       console.log(keyName);
     }
 
   }
 }, false);
-
-function sli(effect){
-  switch(Over.select){
-    case 0:  //boid species 1
-
-
-      break;
-    case 1:
-
-
-      break;
-    case 2:
-
-
-      break;
-    case 3:
-
-
-      break;
-  }
-}
-
 
 Over = new Overlay(mainMenuElements);
 
