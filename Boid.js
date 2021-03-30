@@ -3,7 +3,9 @@ class Boid{
     this.x = randomRange(0, canvas.width);
     this.y = randomRange(0, canvas.height);
     this.angle = 2*Math.random()*Math.PI;
+    this.facing = this.angle;
     this.va = 0;
+    this.facingva = 0;
     this.speed = randomRange(3, 12);
     this.size = randomRange(7, 9);
     // this.r = randomRange(160, 240);
@@ -104,38 +106,17 @@ class Boid{
     yspeed = (this.speed * Math.cos(this.angle)+yccel)*friction;
 
 
-    /*
-    var maxvx = maxspeed * Math.sin(this.angle)
-    var maxvy = maxspeed * Math.cos(this.angle)
-    if(-maxvx>xspeed){
-      xspeed = -maxvx
-    } else if(xspeed>maxvx){
-      xspeed = maxvx
-    }
-    if(-maxvy>yspeed){
-      yspeed = -maxvy
-    } else if(yspeed>maxvy){
-      yspeed = maxvy
-    }
-    */
-
     var va = 0;
     if(yspeed >= 0){
-      //console.log("down")
       this.va = Math.atan(xspeed/yspeed) - this.angle;
-
     } else {
       this.va = Math.atan(xspeed/yspeed)+Math.PI - this.angle;
-      //console.log("up")
     }
 
-    /*
-    if(this.va>maxturn){
-      this.va = maxturn;
-    } else if(this.va<-maxturn){
-      this.va = -maxturn;
+    while(Math.abs(this.va)>Math.PI){
+      this.va -= Math.sign(this.va)*2*Math.PI
     }
-    */
+
     var mom = dist(this, mouseX, mouseY);
 
     var facecursor = mom[2]-this.angle;
@@ -149,7 +130,7 @@ class Boid{
       }
     }
 
-    this.angle = this.angle + this.va;
+    this.angle += this.va;
     if(mousein){
       this.angle += (facecursor)*mouseinfluence;
     }
@@ -173,6 +154,14 @@ class Boid{
     this.x = this.x + xspeed + constantspeed*Math.sin(this.angle); /* + (1 + pressure*1.2)*Math.sin(this.angle); */
     this.y = this.y + yspeed + constantspeed*Math.cos(this.angle); /* + (1 + pressure*1.2)*Math.cos(this.angle); */
 
+    this.facingva = this.angle - this.facing;
+    if(this.facingva>maxturn && this.facingva>0){
+      this.facingva = maxturn;
+    } else if(this.facingva<-maxturn && this.facingva<0){
+      this.facingva = -maxturn;
+    }
+    this.facing = this.facing+this.facingva;
+
   }
   draw(){
     this.size = Math.sqrt(this.speed+1.2)*1.8/this.pressure+1.5;
@@ -181,25 +170,25 @@ class Boid{
     if(speciescolors){
       switch(this.species){
         case 0:
-          var red = this.r * Math.sin(this.angle) + 195 + colordiff;
-          var blue = this.b * Math.sin(this.angle+Math.PI) + 195 + colordiff;
+          var red = this.r * Math.sin(this.facing) + 195 + colordiff;
+          var blue = this.b * Math.sin(this.facing+Math.PI) + 195 + colordiff;
           var green = this.g*2.5;
           break;
         case 1:
-          var blue = this.b * Math.sin(this.angle) + 195 + colordiff;
-          var green = this.g * Math.sin(this.angle+Math.PI) + 195 + colordiff;
+          var blue = this.b * Math.sin(this.facing) + 195 + colordiff;
+          var green = this.g * Math.sin(this.facing+Math.PI) + 195 + colordiff;
           var red = this.g*2.5;
           break;
         case 2:
-          var green = this.g * Math.sin(this.angle) + 195 + colordiff;
-          var red = this.r * Math.sin(this.angle+Math.PI) + 195 + colordiff;
+          var green = this.g * Math.sin(this.facing) + 195 + colordiff;
+          var red = this.r * Math.sin(this.facing+Math.PI) + 195 + colordiff;
           var blue = this.g*2.5;
           break;
       }
     } else{
-      var red = this.r * 1.3 * Math.sin(this.angle) + 180;
-      var green = this.g * 1.3 * Math.sin(this.angle+2*Math.PI/3) + 180;
-      var blue = this.b * 1.3 * Math.sin(this.angle+4*Math.PI/3) + 180;
+      var red = this.r * 1.3 * Math.sin(this.facing) + 180;
+      var green = this.g * 1.3 * Math.sin(this.facing+2*Math.PI/3) + 180;
+      var blue = this.b * 1.3 * Math.sin(this.facing+4*Math.PI/3) + 180;
     }
     if(-20<this.x<canvas.width+20 && -20<this.y<canvas.height+20){
       var lighten = 0;
@@ -221,9 +210,9 @@ class Boid{
           ctx.lineJoin = 'round';
           ctx.beginPath();
           ctx.moveTo(this.x, this.y);
-          ctx.lineTo(this.x+this.size*Math.sin(this.angle+1.35*Math.PI), this.y+this.size*Math.cos(this.angle+1.35*Math.PI));
-          ctx.lineTo(this.x+this.size*1.3*Math.sin(this.angle), this.y+this.size*1.3*Math.cos(this.angle));
-          ctx.lineTo(this.x+this.size*Math.sin(this.angle+0.65*Math.PI), this.y+this.size*Math.cos(this.angle+0.65*Math.PI));
+          ctx.lineTo(this.x+this.size*Math.sin(this.facing+1.35*Math.PI), this.y+this.size*Math.cos(this.facing+1.35*Math.PI));
+          ctx.lineTo(this.x+this.size*1.3*Math.sin(this.facing), this.y+this.size*1.3*Math.cos(this.facing));
+          ctx.lineTo(this.x+this.size*Math.sin(this.facing+0.65*Math.PI), this.y+this.size*Math.cos(this.facing+0.65*Math.PI));
           ctx.lineTo(this.x, this.y);
           break;
         case 1: //avocado
@@ -236,9 +225,9 @@ class Boid{
           ctx.arc(this.x, this.y, 0.8*this.size, 0, 2*Math.PI);
           ctx.fillStyle = 'black'
           ctx.fill();
-          ctx.moveTo(this.x-this.size*0.8*Math.sin(this.angle+tangent), this.y-this.size*0.8*Math.cos(this.angle+tangent));
-          ctx.lineTo(this.x-this.size*2*Math.sin(this.angle), this.y-this.size*2*Math.cos(this.angle));
-          ctx.lineTo(this.x-this.size*0.8*Math.sin(this.angle-tangent), this.y-this.size*0.8*Math.cos(this.angle-tangent));
+          ctx.moveTo(this.x-this.size*0.8*Math.sin(this.facing+tangent), this.y-this.size*0.8*Math.cos(this.facing+tangent));
+          ctx.lineTo(this.x-this.size*2*Math.sin(this.facing), this.y-this.size*2*Math.cos(this.facing));
+          ctx.lineTo(this.x-this.size*0.8*Math.sin(this.facing-tangent), this.y-this.size*0.8*Math.cos(this.facing-tangent));
           ctx.moveTo(this.x, this.y);
           break;
         // case 2: //sharp heart
@@ -247,9 +236,9 @@ class Boid{
         //   ctx.lineJoin = 'miter';
         //   ctx.beginPath();
         //   ctx.moveTo(this.x, this.y);
-        //   ctx.lineTo(this.x+this.size*Math.sin(this.angle+1.35*Math.PI), this.y+this.size*Math.cos(this.angle+1.35*Math.PI));
-        //   ctx.lineTo(this.x+this.size*1.3*Math.sin(this.angle), this.y+this.size*1.3*Math.cos(this.angle));
-        //   ctx.lineTo(this.x+this.size*Math.sin(this.angle+0.65*Math.PI), this.y+this.size*Math.cos(this.angle+0.65*Math.PI));
+        //   ctx.lineTo(this.x+this.size*Math.sin(this.facing+1.35*Math.PI), this.y+this.size*Math.cos(this.facing+1.35*Math.PI));
+        //   ctx.lineTo(this.x+this.size*1.3*Math.sin(this.facing), this.y+this.size*1.3*Math.cos(this.facing));
+        //   ctx.lineTo(this.x+this.size*Math.sin(this.facing+0.65*Math.PI), this.y+this.size*Math.cos(this.facing+0.65*Math.PI));
         //   ctx.lineTo(this.x, this.y);
         //   break;
 //        case 2: //stroke circle
@@ -264,8 +253,8 @@ class Boid{
           ctx.lineWidth = this.size/5;
           ctx.lineJoin = 'miter';
           ctx.beginPath();
-          line(this.x, this.y, this.angle, this.size, color, ctx.lineWidth);
-          ctx.arc(this.x, this.y, this.size, -this.angle-0.5, -this.angle+0.5+Math.PI);
+          line(this.x, this.y, this.facing, this.size, color, ctx.lineWidth);
+          ctx.arc(this.x, this.y, this.size, -this.facing-0.5, -this.facing+0.5+Math.PI);
           break;
 
       }

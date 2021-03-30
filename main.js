@@ -10,37 +10,40 @@ var pause = false;
 var overlay = false;
 var mousein = false;
 var clicking = false;
-
+var boidframes = 0;
 // CUSTOMIZABLES!!!
 var speciesrepel = true; //enable racis--
+var trailstrength = 3;
+canvascolor = "rgba(19, 23, 26, "+(1/trailstrength)+")";
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
 var speciescolors = true; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
 var highlights = true;
-var auras = true;
-var friction = 0.93; // 0.01 to 1.1, and 0.70 to 0.99, default 0.93
+var auras = false;
+var friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
 var maxspeed = 20; // 1-50 default 20
 var bump = 40; // bigger = less clumped (highlighted) boids
-var mouseinfluence = 0.01; // max: 1 min: 0 default: 0.01
+var mouseinfluence = 0.00; // max: 1 min: 0 default: 0.01
 var scrollnumber = 5; //min: 1 max: 10 default: 5
 var repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
 var maxcell = 4; // 0.1 to 10, default.... 4????
-var maxturn	= 0.5;
+var maxturn	= 0.2;
 var borderwidth = 125; //0 to 300 or so, default 125
 var borderstrength = 30; //0 to 200, default 30
-var spotlight = 20
+var spotlight = 20;
 // Formatting for sliders: ["slider", value, text, min, max, updateFunc, checkUpdateFunc, roundAmt]
 // Formatting for text: ["text", text, size]
 // Formatting for switch: ["switch", value, name, checkUpdateFunc, updateFunc]
 var mainMenuElements = [
 ["text", "Boids", 1.5],
 ["slider", 0, "Boid Amount", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
-["switch", auras, "Aura", getAuras, setAuras],
+["switch", speciesrepel, "Species Seperation", getSpeciesRepel, setSpeciesRepel],
 ["switch", speciescolors, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
+["switch", auras, "Aura", getAuras, setAuras],
 ["switch", highlights, "Whitening Pressure Points", getHighlights, setHighlights],
 ["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
-["slider", 93, "Friction", 1, 110, updateFriction, getFriction, 0]
+["slider", 93, "Friction", 10, 110, updateFriction, getFriction, 0]
 ];
 
 // ui update and getupdate functions
@@ -54,6 +57,8 @@ function getSpeciesColors(){return speciescolors;}
 function setSpeciesColors(setTo){speciescolors = setTo;}
 function getHighlights(){return highlights;}
 function setHighlights(setTo){highlights = setTo;}
+function getSpeciesRepel(){return speciesrepel;}
+function setSpeciesRepel(setTo){speciesrepel = setTo;}
 function updateFriction(amt){friction=amt/100;}
 function getFriction(){return friction*100;}
 
@@ -236,8 +241,9 @@ setInterval(function(){
     ctx.fillText("scroll for boids :D", 80, canvas.height-100);
     ctx.fillStyle = canvascolor;
   }
+
   for(var boid of boids){
-    boid.draw()
+    boid.draw();
   }
   if(overlay){
     Over.calc(-1);
