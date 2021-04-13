@@ -13,7 +13,7 @@ var clicking = false;
 var boidframes = 0;
 // CUSTOMIZABLES!!!
 var speciesrepel = true; //enable racis--
-var trailstrength = 3;
+var trailstrength = 3; // number of frames
 canvascolor = "rgba(19, 23, 26, "+(1/trailstrength)+")";
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
 var speciescolors = true; //if false, shows original color scheme
@@ -43,7 +43,8 @@ var mainMenuElements = [
 ["switch", highlights, "Whitening Pressure Points", getHighlights, setHighlights],
 ["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
 ["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
-["slider", 93, "Friction", 10, 110, updateFriction, getFriction, 0]
+["slider", 93, "Friction", 10, 110, updateFriction, getFriction, 0],
+["slider", 3, "trailstrength", 1, 16, updateTrailsStrength, getTrailStrength, 0]
 ];
 
 // ui update and getupdate functions
@@ -61,7 +62,8 @@ function getSpeciesRepel(){return speciesrepel;}
 function setSpeciesRepel(setTo){speciesrepel = setTo;}
 function updateFriction(amt){friction=amt/100;}
 function getFriction(){return friction*100;}
-
+function updateTrailsStrength(amt){trailstrength=amt;canvascolor = "rgba(19, 23, 26, "+(1/trailstrength)+")";}
+function getTrailStrength(){return trailstrength;}
 
 function dist(bo1d, x, y){
   xdist = x - bo1d.x;
