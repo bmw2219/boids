@@ -12,17 +12,17 @@ var mousein = false;
 var clicking = false;
 var boidframes = 0;
 // CUSTOMIZABLES!!!
-var speciesrepel = true; //enable racis--
+var speciesrepel = false; //enable racis--
 var trailstrength = 3; // number of frames
 canvascolor = "rgba(19, 23, 26, "+(1/trailstrength)+")";
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
-var speciescolors = true; //if false, shows original color scheme
+var speciescolors = false; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
-var highlights = true;
+var highlights = false;
 var auras = false;
 var friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
 var maxspeed = 20; // 1-50 default 20
-var bump = 40; // bigger = less clumped (highlighted) boids
+var bump = 20; // bigger = less clumped (highlighted) boids
 var mouseinfluence = 0.00; // max: 1 min: 0 default: 0.01
 var scrollnumber = 5; //min: 1 max: 10 default: 5
 var repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
@@ -41,15 +41,15 @@ var mainMenuElements = [
 ["switch", speciescolors, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
 ["switch", auras, "Aura", getAuras, setAuras],
 ["switch", highlights, "Whitening Pressure Points", getHighlights, setHighlights],
-["slider", 40, "Wave Intensity", 0, 1000, updateWaveIntensity, getWaveIntensity, 0],
-["slider", 1, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
+["slider", 20, "Wave Intensity", 0, 200, updateWaveIntensity, getWaveIntensity, 0],
+["slider", 0, "Mouse Influence", 0, 3, updateMouseInfluence, getMouseInfluence, 0],
 ["slider", 93, "Friction", 10, 110, updateFriction, getFriction, 0],
-["slider", 3, "trailstrength", 1, 16, updateTrailsStrength, getTrailStrength, 0]
+["slider", 3, "Trail Length", 1, 16, updateTrailsStrength, getTrailStrength, 0]
 ];
 
 // ui update and getupdate functions
-function updateMouseInfluence(amt){mouseinfluence=amt/100;}
-function getMouseInfluence(){return mouseinfluence*100;}
+function updateMouseInfluence(amt){mouseinfluence=amt/10;}
+function getMouseInfluence(){return mouseinfluence*10;}
 function updateWaveIntensity(amt){bump=amt;}
 function getWaveIntensity(){return bump;}
 function getAuras(){return auras;}

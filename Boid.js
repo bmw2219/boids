@@ -36,7 +36,7 @@ class Boid{
           var rightspecies = true;
         }
         if(boiddit < 31){
-          repel = (-4)*boiddit+178+bump;
+          repel = (-4)*boiddit+178+bump/friction;
           this.pressure = this.pressure + boiddit*0.002;
         } else if(boiddit > 200 && rightspecies){
           repel = 0;
@@ -203,8 +203,14 @@ class Boid{
       }
 
       var color = 'rgba('+(red+lighten)+', '+(green+lighten)+', '+(blue+lighten)+', '+1+')';
-      ctx.strokeStyle = color
-      switch(this.species){ //4 seperate boid shapes
+      ctx.strokeStyle = color;
+      var displayspecies;
+      if(speciesrepel==true){
+        displayspecies = this.species;
+      } else{
+        displayspecies = 1;
+      }
+      switch(displayspecies){ //4 seperate boid shapes
         case 0: //round heart
           ctx.lineWidth = this.size;
           ctx.lineJoin = 'round';
