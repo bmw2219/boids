@@ -116,22 +116,21 @@ class Boid{
     while(Math.abs(this.va)>Math.PI){
       this.va -= Math.sign(this.va)*2*Math.PI
     }
-
-    var mom = dist(this, mouseX, mouseY);
-
-    var facecursor = mom[2]-this.angle;
-    if(facecursor > Math.PI){
-      while(facecursor > Math.PI){
-        facecursor += -2*Math.PI;
-      }
-    } else if(facecursor < -Math.PI){
-      while(facecursor < Math.PI){
-        facecursor += 2*Math.PI;
-      }
-    }
-
     this.angle += this.va;
     if(mousein){
+      var mom = dist(this, mouseX, mouseY);
+
+      var facecursor = mom[2]-this.angle;
+      if(facecursor > Math.PI){
+        while(facecursor > Math.PI){
+          facecursor -= 2*Math.PI;
+        }
+      } else if(facecursor < -Math.PI){
+        while(facecursor < -Math.PI){
+          facecursor += 2*Math.PI;
+        }
+      }
+
       this.angle += (facecursor)*mouseinfluence;
     }
     this.speed = Math.sqrt(Math.pow(xspeed, 2)+Math.pow(yspeed, 2));
@@ -167,7 +166,7 @@ class Boid{
     this.size = Math.sqrt(this.speed+1.2)*1.8/this.pressure+1.5;
     ctx.lineWidth = this.size;
     ctx.lineJoin = 'round';
-    if(speciescolors){
+    if(speciesrepel){
       switch(this.species){
         case 0:
           var red = this.r * Math.sin(this.facing) + 195 + colordiff;

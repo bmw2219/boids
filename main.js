@@ -16,14 +16,13 @@ var speciesrepel = false; //enable racis--
 var trailstrength = 3; // number of frames
 canvascolor = "rgba(19, 23, 26, "+(1/trailstrength)+")";
 var constantspeed = 1; // a constant speed added to the boid. 0-100, default 1
-var speciescolors = false; //if false, shows original color scheme
 var colordiff = 30; //0 to 60, default 30 makes species colors more distinguished from eachother
 var highlights = false;
 var auras = false;
 var friction = 0.93; // 0.1 to 1.1, and 0.70 to 0.99, default 0.93
 var maxspeed = 20; // 1-50 default 20
 var bump = 20; // bigger = less clumped (highlighted) boids
-var mouseinfluence = 0.00; // max: 1 min: 0 default: 0.01
+var mouseinfluence = 0.02; // max: 1 min: 0 default: 0.01
 var scrollnumber = 5; //min: 1 max: 10 default: 5
 var repelbump = 0.05; //encourages smaller groups of boids. 0 - 1, default 0.05
 var maxcell = 4; // 0.1 to 10, default.... 4????
@@ -38,24 +37,21 @@ var mainMenuElements = [
 ["text", "Boids", 1.5],
 ["slider", 0, "Boid Amount", 0, 250, boidAmtAdjuster, getBoidAmt, 0],
 ["switch", speciesrepel, "Species Seperation", getSpeciesRepel, setSpeciesRepel],
-["switch", speciescolors, "Unique Species Colors", getSpeciesColors, setSpeciesColors],
 ["switch", auras, "Aura", getAuras, setAuras],
 ["switch", highlights, "Whitening Pressure Points", getHighlights, setHighlights],
-["slider", 20, "Wave Intensity", 0, 200, updateWaveIntensity, getWaveIntensity, 0],
-["slider", 0, "Mouse Influence", 0, 3, updateMouseInfluence, getMouseInfluence, 0],
+["slider", 20, "Mouse Influence", 0, 100, updateMouseInfluence, getMouseInfluence, 0],
 ["slider", 93, "Friction", 10, 110, updateFriction, getFriction, 0],
-["slider", 3, "Trail Length", 1, 16, updateTrailsStrength, getTrailStrength, 0]
+["slider", 3, "Trail Length", 1, 16, updateTrailsStrength, getTrailStrength, 0],
+["slider", 20, "Wave Intensity", 0, 200, updateWaveIntensity, getWaveIntensity, 0]
 ];
 
 // ui update and getupdate functions
-function updateMouseInfluence(amt){mouseinfluence=amt/10;}
-function getMouseInfluence(){return mouseinfluence*10;}
+function updateMouseInfluence(amt){mouseinfluence=amt/1000;}
+function getMouseInfluence(){return mouseinfluence*1000;}
 function updateWaveIntensity(amt){bump=amt;}
 function getWaveIntensity(){return bump;}
 function getAuras(){return auras;}
 function setAuras(setTo){auras = setTo;}
-function getSpeciesColors(){return speciescolors;}
-function setSpeciesColors(setTo){speciescolors = setTo;}
 function getHighlights(){return highlights;}
 function setHighlights(setTo){highlights = setTo;}
 function getSpeciesRepel(){return speciesrepel;}
@@ -134,10 +130,12 @@ function getBoidAmt(amt){
 }
 
 function onClick(event){
+  clicking = true;
   Over.clickEvent(event.clientX, event.clientY);
 }
 
 function onRelease(event){
+  clicking = false;
   Over.releaseEvent();
 }
 
